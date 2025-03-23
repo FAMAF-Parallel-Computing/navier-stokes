@@ -1,2 +1,6 @@
+# build output
 out/
 build/
+
+# clangd
+.cache/
