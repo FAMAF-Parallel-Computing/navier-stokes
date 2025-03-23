@@ -55,6 +55,18 @@ static void setBoundary(const uint64_t n, const Boundary b,
 
 static void diffuse(const uint64_t n, const Boundary b, float *__restrict x,
                     float *__restrict xPrev, const float diff, const float dt) {
+
+  float a = dt * diff * n * n;
+  for (uint32_t k = 0; k < 20; k++) {
+    for (uint64_t i = 1; i <= n; i++)
+      for (uint64_t j = 1; j <= n; j++)
+        x[idx(i, j, n)] = (xPrev[idx(i, j, n)] +
+                           a * (x[idx(i - 1, j, n)] + x[idx(i + 1, j, n)]) +
+                           x[idx(i, j - 1, n)] + x[idx(i, j + 1, n)]) /
+                          (1 + 4 * a);
+
+    setBoundary(n, b, x);
+  }
 }
 
 static void advect(const uint64_t n, const Boundary b, float *__restrict d,

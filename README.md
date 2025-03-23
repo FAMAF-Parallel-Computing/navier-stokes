@@ -37,7 +37,7 @@ $$
 Then we proceed to solve the system
 
 $$
-(I - aA)x_{t + 1} = x_t
+\left(I - aA\right)x_{t + 1} = x_t
 $$
 
 Where
@@ -56,7 +56,7 @@ Gauss Seidel, nonetheless as the system is sparse
 we can solve it directly
 
 $$
-x^{t + 1}_{i, j} = \frac{a(x^{t + 1}_{i, j - 1} + x^{t + 1}_{i, j + 1} + x^{t + 1}_{i - 1, j} + x^{t + 1}_{i + 1, j}) + x^t}{(1 + 4a)}
+x^{t + 1}_{i, j} = \frac{a \left(x^{t + 1}_{i, j - 1} + x^{t + 1}_{i, j + 1} + x^{t + 1}_{i - 1, j} + x^{t + 1}_{i + 1, j}\right) + x^t}{\left(1 + 4a\right)}
 $$
 
 ## Bibliography
