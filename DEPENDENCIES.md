@@ -12,6 +12,7 @@ it from source
 ```bash
 git clone https://github.com/libsdl-org/SDL.git SDL3
 cd SDL3
+git checkout release-<3.x.x>
 cmake -S . -B ./bSDL3 -G Ninja -D CMAKE_BUILD_TYPE=Release
 cmake --build ./bSDL3 -j $(nproc)
 cmake --install <sdl-abs-install-dir>
