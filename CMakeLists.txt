@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(SDL3 3.2 REQUIRED CONFIG)
+find_package(Vulkan REQUIRED)
 
 # have multiple libraries
 # feature?: ship some of them for a target
@@ -37,4 +38,5 @@ target_sources(navier-stokes-render
 target_link_libraries(navier-stokes-render
   PRIVATE
   SDL3::SDL3
+  Vulkan::Vulkan
 )
