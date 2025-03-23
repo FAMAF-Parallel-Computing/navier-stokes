@@ -17,7 +17,7 @@ $$
 where the laplacian operator is a 5 point stencil
 
 $$
-\nabla^2 x_{i,j} = x_{i, j - 1} + x_{i, j + 1} + x_{i - 1, j} + x_{i + 1, j} - 4 x_{i,}
+\nabla^2 x_{i,j} = x_{i, j - 1} + x_{i, j + 1} + x_{i - 1, j} + x_{i + 1, j} - 4 x_{i,j}
 $$
 
 but this explicit method is prone to numerical instability—especially when the time step or the diffusion coefficient is large. Small errors can rapidly accumulate, causing the simulation to become non-physical.
@@ -31,7 +31,7 @@ $$
 Rearraging the terms we have
 
 $$
-(1 + 4a)x^{t + 1}_{i, j} - a(x^{t + 1}_{i, j - 1} + x^{t + 1}_{i, j + 1} + x^{t + 1}_{i - 1, j} + x^{t + 1}_{i + 1, j}) = x^t
+(1 + 4a)x^{t + 1}_{i, j} - a \left(x^{t + 1}_{i, j - 1}\right)
 $$
 
 Then we proceed to solve the system
@@ -56,7 +56,7 @@ Gauss Seidel, nonetheless as the system is sparse
 we can solve it directly
 
 $$
-x^{t + 1}_{i, j} =  \frac{a(x^{t + 1}_{i, j - 1} + x^{t + 1}_{i, j + 1} + x^{t + 1}_{i - 1, j} + x^{t + 1}_{i + 1, j}) + x^t}{(1 + 4a)}
+x^{t + 1}_{i, j} = \frac{a(x^{t + 1}_{i, j - 1} + x^{t + 1}_{i, j + 1} + x^{t + 1}_{i - 1, j} + x^{t + 1}_{i + 1, j}) + x^t}{(1 + 4a)}
 $$
 
 ## Bibliography
