@@ -17,4 +17,5 @@ cmake --build ./bSDL3 -j $(nproc)
 cmake --install <sdl-abs-install-dir>
 ```
 
-Now before configuring `navier-stokes` set `sdl-abs-install-dir` env variable.
+Now before configuring `navier-stokes` with CMake set `sdl-abs-install-dir`
+env variable.
