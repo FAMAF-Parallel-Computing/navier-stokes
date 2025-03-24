@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/orphee/Dev/FAMAF/navier-stokes/build",
+  "command": "/usr/bin/clang++ -DNS_VK_VALIDATIONS -isystem /home/orphee/Downloads/vulkansdk-linux-x86_64-1.4.309.0/1.4.309.0/x86_64/include -g -std=c++23 -fcolor-diagnostics @CMakeFiles/navier-stokes-vk-headless.dir/main.cpp.o.modmap -o CMakeFiles/navier-stokes-vk-headless.dir/main.cpp.o -c /home/orphee/Dev/FAMAF/navier-stokes/main.cpp",
+  "file": "/home/orphee/Dev/FAMAF/navier-stokes/main.cpp",
+  "output": "CMakeFiles/navier-stokes-vk-headless.dir/main.cpp.o"
+},
+{
+  "directory": "/home/orphee/Dev/FAMAF/navier-stokes/build",
+  "command": "/usr/bin/clang++ -DNS_VK_VALIDATIONS -isystem /home/orphee/Downloads/vulkansdk-linux-x86_64-1.4.309.0/1.4.309.0/x86_64/include -g -std=c++23 -fcolor-diagnostics @CMakeFiles/navier-stokes-vk-headless.dir/vma.cpp.o.modmap -o CMakeFiles/navier-stokes-vk-headless.dir/vma.cpp.o -c /home/orphee/Dev/FAMAF/navier-stokes/vma.cpp",
+  "file": "/home/orphee/Dev/FAMAF/navier-stokes/vma.cpp",
+  "output": "CMakeFiles/navier-stokes-vk-headless.dir/vma.cpp.o"
+}
+]

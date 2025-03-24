@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.30)
-project(echo_uring LANGUAGES CXX)
+project(navier-stokes LANGUAGES CXX)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_COLOR_DIAGNOSTICS ON)
@@ -8,35 +8,20 @@ set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-find_package(SDL3 3.2 REQUIRED CONFIG)
 find_package(Vulkan REQUIRED)
 
-# have multiple libraries
-# feature?: ship some of them for a target
-# and on runtime determine what to use?
-add_library(generic_solver)
-target_sources(generic_solver
-  PRIVATE
-  solver/generic.cpp
-)
+option(ENABLE_VK_VALIDATIONS "Enable Vulkan validation layers" OFF)
 
-add_executable(navier-stokes-headless)
-target_sources(navier-stokes-headless
+add_executable(navier-stokes-vk-headless)
+target_sources(navier-stokes-vk-headless
   PRIVATE
-  headless.cpp
+  main.cpp vma.cpp
 )
-target_link_libraries(navier-stokes-headless
+target_link_libraries(navier-stokes-vk-headless
   PRIVATE
-  generic_solver
-)
-
-add_executable(navier-stokes-render)
-target_sources(navier-stokes-render
-  PRIVATE
-  render.cpp
-)
-target_link_libraries(navier-stokes-render
-  PRIVATE
-  SDL3::SDL3
   Vulkan::Vulkan
 )
+if(ENABLE_VK_VALIDATIONS)
+  message(STATUS "Vulkan validations enabled")
+  target_compile_definitions(navier-stokes-vk-headless PRIVATE NS_VK_VALIDATIONS)
+endif()
