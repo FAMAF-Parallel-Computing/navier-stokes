@@ -1,0 +1,611 @@
+Iterations:        100
+Instructions:      5400
+Total Cycles:      917
+Total uOps:        5400
+
+Dispatch Width:    6
+uOps Per Cycle:    5.89
+IPC:               5.89
+Block RThroughput: 9.0
+
+
+Instruction Info:
+[1]: #uOps
+[2]: Latency
+[3]: RThroughput
+[4]: MayLoad
+[5]: MayStore
+[6]: HasSideEffects (U)
+
+[1]    [2]    [3]    [4]    [5]    [6]    Instructions:
+ 1      1     0.25                        addq	$2, %rdi
+ 1      3     1.00                        imulq	%rdi, %rdi
+ 1      1     0.25                        testq	%rdi, %rdi
+ 1      1     0.50                        je	.LBB0_13
+ 1      1     0.25                        cmpq	$8, %rdi
+ 1      1     0.50                        jae	.LBB0_4
+ 1      0     0.17                        xorl	%eax, %eax
+ 1      1     0.50                        jmp	.LBB0_3
+ 1      1     0.25                        cmpq	$64, %rdi
+ 1      1     0.50                        jae	.LBB0_6
+ 1      0     0.17                        xorl	%eax, %eax
+ 1      1     0.50                        jmp	.LBB0_10
+ 1      2     1.00                        vbroadcastss	%xmm0, %zmm1
+ 1      0     0.17                        movq	%rdi, %rax
+ 1      1     0.25                        andq	$-64, %rax
+ 1      0     0.17                        xorl	%ecx, %ecx
+ 1      8     0.50    *                   vmovups	(%rdx,%rcx,4), %zmm2
+ 1      8     0.50    *                   vmovups	64(%rdx,%rcx,4), %zmm3
+ 1      8     0.50    *                   vmovups	128(%rdx,%rcx,4), %zmm4
+ 1      8     0.50    *                   vmovups	192(%rdx,%rcx,4), %zmm5
+ 1      11    1.00    *                   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+ 1      11    1.00    *                   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+ 1      11    1.00    *                   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+ 1      11    1.00    *                   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+ 1      1     1.00           *            vmovups	%zmm2, (%rsi,%rcx,4)
+ 1      1     1.00           *            vmovups	%zmm3, 64(%rsi,%rcx,4)
+ 1      1     1.00           *            vmovups	%zmm4, 128(%rsi,%rcx,4)
+ 1      1     1.00           *            vmovups	%zmm5, 192(%rsi,%rcx,4)
+ 1      1     0.25                        addq	$64, %rcx
+ 1      1     0.25                        cmpq	%rcx, %rax
+ 1      1     0.50                        jne	.LBB0_7
+ 1      1     0.25                        cmpq	%rax, %rdi
+ 1      1     0.50                        je	.LBB0_13
+ 1      1     0.25                        testb	$56, %dil
+ 1      1     0.50                        je	.LBB0_3
+ 1      2     1.00                        vbroadcastss	%xmm0, %ymm1
+ 1      0     0.17                        movq	%rax, %rcx
+ 1      0     0.17                        movq	%rdi, %rax
+ 1      1     0.25                        andq	$-8, %rax
+ 1      8     0.50    *                   vmovups	(%rdx,%rcx,4), %ymm2
+ 1      11    0.50    *                   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+ 1      1     1.00           *            vmovups	%ymm2, (%rsi,%rcx,4)
+ 1      1     0.25                        addq	$8, %rcx
+ 1      1     0.25                        cmpq	%rcx, %rax
+ 1      1     0.50                        jne	.LBB0_11
+ 1      1     0.50                        jmp	.LBB0_12
+ 1      8     0.50    *                   vmovss	(%rdx,%rax,4), %xmm1
+ 1      11    1.00    *                   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+ 1      1     1.00           *            vmovss	%xmm1, (%rsi,%rax,4)
+ 1      1     0.25                        incq	%rax
+ 1      1     0.25                        cmpq	%rax, %rdi
+ 1      1     0.50                        jne	.LBB0_3
+ 1      0     0.25                  U     vzeroupper
+ 1      5     0.50                  U     retq
+
+
+Resources:
+[0]   - Zn4AGU0
+[1]   - Zn4AGU1
+[2]   - Zn4AGU2
+[3]   - Zn4ALU0
+[4]   - Zn4ALU1
+[5]   - Zn4ALU2
+[6]   - Zn4ALU3
+[7]   - Zn4BRU1
+[8]   - Zn4FP0
+[9]   - Zn4FP1
+[10]  - Zn4FP2
+[11]  - Zn4FP3
+[12.0] - Zn4FP45
+[12.1] - Zn4FP45
+[13]  - Zn4FPSt
+[14.0] - Zn4LSU
+[14.1] - Zn4LSU
+[14.2] - Zn4LSU
+[15.0] - Zn4Load
+[15.1] - Zn4Load
+[15.2] - Zn4Load
+[16.0] - Zn4Store
+[16.1] - Zn4Store
+
+
+Resource pressure per iteration:
+[0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]    [8]    [9]    [10]   [11]   [12.0] [12.1] [13]   [14.0] [14.1] [14.2] [15.0] [15.1] [15.2] [16.0] [16.1] 
+0.33   0.33   0.34   7.00   5.00   4.00   5.00   6.00   5.06   7.94   0.50   0.50   9.00   9.00   6.00   6.33   6.33   6.34   4.33   4.33   4.34   3.00   3.00   
+
+Resource pressure by instruction:
+[0]    [1]    [2]    [3]    [4]    [5]    [6]    [7]    [8]    [9]    [10]   [11]   [12.0] [12.1] [13]   [14.0] [14.1] [14.2] [15.0] [15.1] [15.2] [16.0] [16.1] Instructions:
+ -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     addq	$2, %rdi
+ -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     imulq	%rdi, %rdi
+ -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     testq	%rdi, %rdi
+ -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     je	.LBB0_13
+ -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     cmpq	$8, %rdi
+ -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jae	.LBB0_4
+ -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     xorl	%eax, %eax
+ -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jmp	.LBB0_3
+ -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     cmpq	$64, %rdi
+ -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jae	.LBB0_6
+ -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     xorl	%eax, %eax
+ -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jmp	.LBB0_10
+ -      -      -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -     vbroadcastss	%xmm0, %zmm1
+ -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     movq	%rdi, %rax
+ -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     andq	$-64, %rax
+ -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     xorl	%ecx, %ecx
+ -      -      -      -      -      -      -      -      -      -      -      -     0.97   0.03    -     0.35   0.33   0.32   0.32   0.33   0.35    -      -     vmovups	(%rdx,%rcx,4), %zmm2
+ -      -      -      -      -      -      -      -      -      -      -      -     0.97   0.03    -     0.34   0.32   0.34   0.33   0.34   0.33    -      -     vmovups	64(%rdx,%rcx,4), %zmm3
+ -      -      -      -      -      -      -      -      -      -      -      -     0.02   0.98    -     0.33   0.33   0.34   0.34   0.33   0.33    -      -     vmovups	128(%rdx,%rcx,4), %zmm4
+ -      -      -      -      -      -      -      -      -      -      -      -     1.00    -      -     0.33   0.33   0.34   0.33   0.33   0.34    -      -     vmovups	192(%rdx,%rcx,4), %zmm5
+ -      -      -      -      -      -      -      -     2.00    -      -      -      -     1.00    -     0.33   0.34   0.33   0.33   0.34   0.33    -      -     vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+ -      -      -      -      -      -      -      -      -     2.00    -      -     1.00    -      -     0.34   0.33   0.33   0.34   0.33   0.33    -      -     vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+ -      -      -      -      -      -      -      -     2.00    -      -      -     0.98   0.02    -     0.33   0.34   0.33   0.34   0.33   0.33    -      -     vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+ -      -      -      -      -      -      -      -      -     2.00    -      -     0.99   0.01    -     0.32   0.34   0.34   0.32   0.35   0.33    -      -     vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+ -      -      -      -      -      -      -      -      -      -      -      -      -     1.00   1.00   0.33   0.35   0.32    -      -      -      -     1.00   vmovups	%zmm2, (%rsi,%rcx,4)
+ -      -      -      -      -      -      -      -      -      -      -      -     0.02   0.98   1.00   0.34   0.32   0.34    -      -      -     1.00    -     vmovups	%zmm3, 64(%rsi,%rcx,4)
+ -      -      -      -      -      -      -      -      -      -      -      -     0.01   0.99   1.00   0.34   0.32   0.34    -      -      -      -     1.00   vmovups	%zmm4, 128(%rsi,%rcx,4)
+ -      -      -      -      -      -      -      -      -      -      -      -     0.02   0.98   1.00   0.35   0.33   0.32    -      -      -     1.00    -     vmovups	%zmm5, 192(%rsi,%rcx,4)
+ -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     addq	$64, %rcx
+ -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     cmpq	%rcx, %rax
+ -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jne	.LBB0_7
+ -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     cmpq	%rax, %rdi
+ -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     je	.LBB0_13
+ -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     testb	$56, %dil
+ -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     je	.LBB0_3
+ -      -      -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -     vbroadcastss	%xmm0, %ymm1
+ -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     movq	%rax, %rcx
+ -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     movq	%rdi, %rax
+ -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     andq	$-8, %rax
+ -      -      -      -      -      -      -      -      -      -      -      -     0.03   0.97    -     0.34   0.31   0.35   0.34   0.32   0.34    -      -     vmovups	(%rdx,%rcx,4), %ymm2
+ -      -      -      -      -      -      -      -     1.00    -      -      -     0.99   0.01    -     0.33   0.34   0.33   0.34   0.34   0.32    -      -     vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+ -      -      -      -      -      -      -      -      -      -      -      -     0.01   0.99   1.00   0.34   0.33   0.33    -      -      -      -     1.00   vmovups	%ymm2, (%rsi,%rcx,4)
+ -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     addq	$8, %rcx
+ -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     cmpq	%rcx, %rax
+ -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jne	.LBB0_11
+ -      -      -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jmp	.LBB0_12
+ -      -      -      -      -      -      -      -      -      -      -      -     0.97   0.03    -     0.33   0.33   0.34   0.32   0.33   0.35    -      -     vmovss	(%rdx,%rax,4), %xmm1
+ -      -      -      -      -      -      -      -     0.06   1.94    -      -     0.99   0.01    -     0.31   0.35   0.34   0.34   0.33   0.33    -      -     vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+ -      -      -      -      -      -      -      -      -      -      -      -     0.03   0.97   1.00   0.32   0.34   0.34    -      -      -     1.00    -     vmovss	%xmm1, (%rsi,%rax,4)
+ -      -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     incq	%rax
+ -      -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     cmpq	%rax, %rdi
+ -      -      -     1.00    -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -      -     jne	.LBB0_3
+ -      -      -      -      -      -      -      -      -      -     0.50   0.50    -      -      -      -      -      -      -      -      -      -      -     vzeroupper
+0.33   0.33   0.34   1.00    -      -      -      -      -      -      -      -      -      -      -     0.33   0.35   0.32   0.34   0.33   0.33    -      -     retq
+
+
+Timeline view:
+                    0123456789          0123456789          0123456789          0123456789
+Index     0123456789          0123456789          0123456789          0123456789          
+
+[0,0]     DeER .    .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   addq	$2, %rdi
+[0,1]     D=eeeER   .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   imulq	%rdi, %rdi
+[0,2]     D====eER  .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   testq	%rdi, %rdi
+[0,3]     D=====eER .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   je	.LBB0_13
+[0,4]     D====eE-R .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   cmpq	$8, %rdi
+[0,5]     D=====eER .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   jae	.LBB0_4
+[0,6]     .D------R .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   xorl	%eax, %eax
+[0,7]     .DeE----R .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   jmp	.LBB0_3
+[0,8]     .D===eE-R .    .    .    .    .    .    .    .    .    .    .    .    .    .   .   cmpq	$64, %rdi
+[0,9]     .D=====eER.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   jae	.LBB0_6
+[0,10]    .D-------R.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   xorl	%eax, %eax
+[0,11]    .DeE-----R.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   jmp	.LBB0_10
+[0,12]    . DeeE---R.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %zmm1
+[0,13]    . D------R.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   movq	%rdi, %rax
+[0,14]    . D==eE--R.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   andq	$-64, %rax
+[0,15]    . D------R.    .    .    .    .    .    .    .    .    .    .    .    .    .   .   xorl	%ecx, %ecx
+[0,16]    . DeeeeeeeeER  .    .    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[0,17]    . DeeeeeeeeER  .    .    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[0,18]    .  DeeeeeeeeER .    .    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[0,19]    .  DeeeeeeeeER .    .    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[0,20]    .  D=eeeeeeeeeeeER  .    .    .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[0,21]    .  D=eeeeeeeeeeeER  .    .    .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[0,22]    .  D===eeeeeeeeeeeER.    .    .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[0,23]    .  D===eeeeeeeeeeeER.    .    .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[0,24]    .   D===========eE-R.    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm2, (%rsi,%rcx,4)
+[0,25]    .   D============eER.    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[0,26]    .   D=============eER    .    .    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[0,27]    .   D==============eER   .    .    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[0,28]    .   D=eE-------------R   .    .    .    .    .    .    .    .    .    .    .   .   addq	$64, %rcx
+[0,29]    .   D==eE------------R   .    .    .    .    .    .    .    .    .    .    .   .   cmpq	%rcx, %rax
+[0,30]    .    D==eE-----------R   .    .    .    .    .    .    .    .    .    .    .   .   jne	.LBB0_7
+[0,31]    .    DeE-------------R   .    .    .    .    .    .    .    .    .    .    .   .   cmpq	%rax, %rdi
+[0,32]    .    D=eE------------R   .    .    .    .    .    .    .    .    .    .    .   .   je	.LBB0_13
+[0,33]    .    DeE-------------R   .    .    .    .    .    .    .    .    .    .    .   .   testb	$56, %dil
+[0,34]    .    D==eE-----------R   .    .    .    .    .    .    .    .    .    .    .   .   je	.LBB0_3
+[0,35]    .    D===eeE---------R   .    .    .    .    .    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %ymm1
+[0,36]    .    .D---------------R  .    .    .    .    .    .    .    .    .    .    .   .   movq	%rax, %rcx
+[0,37]    .    .D---------------R  .    .    .    .    .    .    .    .    .    .    .   .   movq	%rdi, %rax
+[0,38]    .    .DeE-------------R  .    .    .    .    .    .    .    .    .    .    .   .   andq	$-8, %rax
+[0,39]    .    .D=eeeeeeeeE-----R  .    .    .    .    .    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %ymm2
+[0,40]    .    .D==eeeeeeeeeeeE-R  .    .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[0,41]    .    .D=============eER  .    .    .    .    .    .    .    .    .    .    .   .   vmovups	%ymm2, (%rsi,%rcx,4)
+[0,42]    .    . DeE------------R  .    .    .    .    .    .    .    .    .    .    .   .   addq	$8, %rcx
+[0,43]    .    . D=eE-----------R  .    .    .    .    .    .    .    .    .    .    .   .   cmpq	%rcx, %rax
+[0,44]    .    . D==eE----------R  .    .    .    .    .    .    .    .    .    .    .   .   jne	.LBB0_11
+[0,45]    .    . D=eE------------R .    .    .    .    .    .    .    .    .    .    .   .   jmp	.LBB0_12
+[0,46]    .    . DeeeeeeeeE------R .    .    .    .    .    .    .    .    .    .    .   .   vmovss	(%rdx,%rax,4), %xmm1
+[0,47]    .    . D==eeeeeeeeeeeE-R .    .    .    .    .    .    .    .    .    .    .   .   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[0,48]    .    .  D============eER .    .    .    .    .    .    .    .    .    .    .   .   vmovss	%xmm1, (%rsi,%rax,4)
+[0,49]    .    .  DeE------------R .    .    .    .    .    .    .    .    .    .    .   .   incq	%rax
+[0,50]    .    .  D=eE-----------R .    .    .    .    .    .    .    .    .    .    .   .   cmpq	%rax, %rdi
+[0,51]    .    .  D==eE----------R .    .    .    .    .    .    .    .    .    .    .   .   jne	.LBB0_3
+[0,52]    .    .  DE-------------R .    .    .    .    .    .    .    .    .    .    .   .   vzeroupper
+[0,53]    .    .  DeeeeeE--------R .    .    .    .    .    .    .    .    .    .    .   .   retq
+[1,0]     .    .   DeE------------R.    .    .    .    .    .    .    .    .    .    .   .   addq	$2, %rdi
+[1,1]     .    .   D=eeeE---------R.    .    .    .    .    .    .    .    .    .    .   .   imulq	%rdi, %rdi
+[1,2]     .    .   D====eE--------R.    .    .    .    .    .    .    .    .    .    .   .   testq	%rdi, %rdi
+[1,3]     .    .   D=====eE-------R.    .    .    .    .    .    .    .    .    .    .   .   je	.LBB0_13
+[1,4]     .    .   D====eE--------R.    .    .    .    .    .    .    .    .    .    .   .   cmpq	$8, %rdi
+[1,5]     .    .   D=====eE-------R.    .    .    .    .    .    .    .    .    .    .   .   jae	.LBB0_4
+[1,6]     .    .    D-------------R.    .    .    .    .    .    .    .    .    .    .   .   xorl	%eax, %eax
+[1,7]     .    .    DeE-----------R.    .    .    .    .    .    .    .    .    .    .   .   jmp	.LBB0_3
+[1,8]     .    .    D===eE--------R.    .    .    .    .    .    .    .    .    .    .   .   cmpq	$64, %rdi
+[1,9]     .    .    D=====eE-------R    .    .    .    .    .    .    .    .    .    .   .   jae	.LBB0_6
+[1,10]    .    .    D--------------R    .    .    .    .    .    .    .    .    .    .   .   xorl	%eax, %eax
+[1,11]    .    .    D=eE-----------R    .    .    .    .    .    .    .    .    .    .   .   jmp	.LBB0_10
+[1,12]    .    .    .DeeE----------R    .    .    .    .    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %zmm1
+[1,13]    .    .    .D-------------R    .    .    .    .    .    .    .    .    .    .   .   movq	%rdi, %rax
+[1,14]    .    .    .D==eE---------R    .    .    .    .    .    .    .    .    .    .   .   andq	$-64, %rax
+[1,15]    .    .    .D-------------R    .    .    .    .    .    .    .    .    .    .   .   xorl	%ecx, %ecx
+[1,16]    .    .    .DeeeeeeeeE----R    .    .    .    .    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[1,17]    .    .    .DeeeeeeeeE----R    .    .    .    .    .    .    .    .    .    .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[1,18]    .    .    . DeeeeeeeeE----R   .    .    .    .    .    .    .    .    .    .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[1,19]    .    .    . DeeeeeeeeE----R   .    .    .    .    .    .    .    .    .    .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[1,20]    .    .    . D=eeeeeeeeeeeER   .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[1,21]    .    .    . D=eeeeeeeeeeeER   .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[1,22]    .    .    . D===eeeeeeeeeeeER .    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[1,23]    .    .    . D====eeeeeeeeeeeER.    .    .    .    .    .    .    .    .    .   .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[1,24]    .    .    .  D===========eE--R.    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm2, (%rsi,%rcx,4)
+[1,25]    .    .    .  D============eE-R.    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[1,26]    .    .    .  D=============eER.    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[1,27]    .    .    .  D==============eER    .    .    .    .    .    .    .    .    .   .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[1,28]    .    .    .  D=eE-------------R    .    .    .    .    .    .    .    .    .   .   addq	$64, %rcx
+[1,29]    .    .    .  D==eE------------R    .    .    .    .    .    .    .    .    .   .   cmpq	%rcx, %rax
+[1,30]    .    .    .   D==eE-----------R    .    .    .    .    .    .    .    .    .   .   jne	.LBB0_7
+[1,31]    .    .    .   DeE-------------R    .    .    .    .    .    .    .    .    .   .   cmpq	%rax, %rdi
+[1,32]    .    .    .   D=eE------------R    .    .    .    .    .    .    .    .    .   .   je	.LBB0_13
+[1,33]    .    .    .   DeE-------------R    .    .    .    .    .    .    .    .    .   .   testb	$56, %dil
+[1,34]    .    .    .   D==eE-----------R    .    .    .    .    .    .    .    .    .   .   je	.LBB0_3
+[1,35]    .    .    .   D=eeE-----------R    .    .    .    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %ymm1
+[1,36]    .    .    .    D---------------R   .    .    .    .    .    .    .    .    .   .   movq	%rax, %rcx
+[1,37]    .    .    .    D---------------R   .    .    .    .    .    .    .    .    .   .   movq	%rdi, %rax
+[1,38]    .    .    .    DeE-------------R   .    .    .    .    .    .    .    .    .   .   andq	$-8, %rax
+[1,39]    .    .    .    D==eeeeeeeeE----R   .    .    .    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %ymm2
+[1,40]    .    .    .    D===eeeeeeeeeeeER   .    .    .    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[1,41]    .    .    .    D==============eER  .    .    .    .    .    .    .    .    .   .   vmovups	%ymm2, (%rsi,%rcx,4)
+[1,42]    .    .    .    .DeE-------------R  .    .    .    .    .    .    .    .    .   .   addq	$8, %rcx
+[1,43]    .    .    .    .D=eE------------R  .    .    .    .    .    .    .    .    .   .   cmpq	%rcx, %rax
+[1,44]    .    .    .    .D==eE-----------R  .    .    .    .    .    .    .    .    .   .   jne	.LBB0_11
+[1,45]    .    .    .    .D=eE------------R  .    .    .    .    .    .    .    .    .   .   jmp	.LBB0_12
+[1,46]    .    .    .    .D===eeeeeeeeE---R  .    .    .    .    .    .    .    .    .   .   vmovss	(%rdx,%rax,4), %xmm1
+[1,47]    .    .    .    .D====eeeeeeeeeeeER .    .    .    .    .    .    .    .    .   .   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[1,48]    .    .    .    . D==============eER.    .    .    .    .    .    .    .    .   .   vmovss	%xmm1, (%rsi,%rax,4)
+[1,49]    .    .    .    . DeE--------------R.    .    .    .    .    .    .    .    .   .   incq	%rax
+[1,50]    .    .    .    . D=eE-------------R.    .    .    .    .    .    .    .    .   .   cmpq	%rax, %rdi
+[1,51]    .    .    .    . D==eE------------R.    .    .    .    .    .    .    .    .   .   jne	.LBB0_3
+[1,52]    .    .    .    . DE---------------R.    .    .    .    .    .    .    .    .   .   vzeroupper
+[1,53]    .    .    .    . DeeeeeE----------R.    .    .    .    .    .    .    .    .   .   retq
+[2,0]     .    .    .    .  DeE-------------R.    .    .    .    .    .    .    .    .   .   addq	$2, %rdi
+[2,1]     .    .    .    .  D=eeeE----------R.    .    .    .    .    .    .    .    .   .   imulq	%rdi, %rdi
+[2,2]     .    .    .    .  D====eE---------R.    .    .    .    .    .    .    .    .   .   testq	%rdi, %rdi
+[2,3]     .    .    .    .  D=====eE---------R    .    .    .    .    .    .    .    .   .   je	.LBB0_13
+[2,4]     .    .    .    .  D====eE----------R    .    .    .    .    .    .    .    .   .   cmpq	$8, %rdi
+[2,5]     .    .    .    .  D=====eE---------R    .    .    .    .    .    .    .    .   .   jae	.LBB0_4
+[2,6]     .    .    .    .   D---------------R    .    .    .    .    .    .    .    .   .   xorl	%eax, %eax
+[2,7]     .    .    .    .   DeE-------------R    .    .    .    .    .    .    .    .   .   jmp	.LBB0_3
+[2,8]     .    .    .    .   D===eE----------R    .    .    .    .    .    .    .    .   .   cmpq	$64, %rdi
+[2,9]     .    .    .    .   D=====eE--------R    .    .    .    .    .    .    .    .   .   jae	.LBB0_6
+[2,10]    .    .    .    .   D---------------R    .    .    .    .    .    .    .    .   .   xorl	%eax, %eax
+[2,11]    .    .    .    .   D=eE------------R    .    .    .    .    .    .    .    .   .   jmp	.LBB0_10
+[2,12]    .    .    .    .    D==eeE----------R   .    .    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %zmm1
+[2,13]    .    .    .    .    D---------------R   .    .    .    .    .    .    .    .   .   movq	%rdi, %rax
+[2,14]    .    .    .    .    D==eE-----------R   .    .    .    .    .    .    .    .   .   andq	$-64, %rax
+[2,15]    .    .    .    .    D---------------R   .    .    .    .    .    .    .    .   .   xorl	%ecx, %ecx
+[2,16]    .    .    .    .    D=eeeeeeeeE-----R   .    .    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[2,17]    .    .    .    .    D=eeeeeeeeE-----R   .    .    .    .    .    .    .    .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[2,18]    .    .    .    .    .D=eeeeeeeeE----R   .    .    .    .    .    .    .    .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[2,19]    .    .    .    .    .D=eeeeeeeeE----R   .    .    .    .    .    .    .    .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[2,20]    .    .    .    .    .D==eeeeeeeeeeeER   .    .    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[2,21]    .    .    .    .    .D==eeeeeeeeeeeE-R  .    .    .    .    .    .    .    .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[2,22]    .    .    .    .    .D====eeeeeeeeeeeER .    .    .    .    .    .    .    .   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[2,23]    .    .    .    .    .D=====eeeeeeeeeeeER.    .    .    .    .    .    .    .   .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[2,24]    .    .    .    .    . D============eE--R.    .    .    .    .    .    .    .   .   vmovups	%zmm2, (%rsi,%rcx,4)
+[2,25]    .    .    .    .    . D=============eE-R.    .    .    .    .    .    .    .   .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[2,26]    .    .    .    .    . D==============eER.    .    .    .    .    .    .    .   .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[2,27]    .    .    .    .    . D===============eER    .    .    .    .    .    .    .   .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[2,28]    .    .    .    .    . D=eE--------------R    .    .    .    .    .    .    .   .   addq	$64, %rcx
+[2,29]    .    .    .    .    . D==eE-------------R    .    .    .    .    .    .    .   .   cmpq	%rcx, %rax
+[2,30]    .    .    .    .    .  D==eE------------R    .    .    .    .    .    .    .   .   jne	.LBB0_7
+[2,31]    .    .    .    .    .  DeE--------------R    .    .    .    .    .    .    .   .   cmpq	%rax, %rdi
+[2,32]    .    .    .    .    .  D=eE-------------R    .    .    .    .    .    .    .   .   je	.LBB0_13
+[2,33]    .    .    .    .    .  DeE--------------R    .    .    .    .    .    .    .   .   testb	$56, %dil
+[2,34]    .    .    .    .    .  D==eE------------R    .    .    .    .    .    .    .   .   je	.LBB0_3
+[2,35]    .    .    .    .    .  D==eeE-----------R    .    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %ymm1
+[2,36]    .    .    .    .    .   D----------------R   .    .    .    .    .    .    .   .   movq	%rax, %rcx
+[2,37]    .    .    .    .    .   D----------------R   .    .    .    .    .    .    .   .   movq	%rdi, %rax
+[2,38]    .    .    .    .    .   DeE--------------R   .    .    .    .    .    .    .   .   andq	$-8, %rax
+[2,39]    .    .    .    .    .   D===eeeeeeeeE----R   .    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %ymm2
+[2,40]    .    .    .    .    .   D====eeeeeeeeeeeER   .    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[2,41]    .    .    .    .    .   D===============eER  .    .    .    .    .    .    .   .   vmovups	%ymm2, (%rsi,%rcx,4)
+[2,42]    .    .    .    .    .    DeE--------------R  .    .    .    .    .    .    .   .   addq	$8, %rcx
+[2,43]    .    .    .    .    .    D=eE-------------R  .    .    .    .    .    .    .   .   cmpq	%rcx, %rax
+[2,44]    .    .    .    .    .    D==eE------------R  .    .    .    .    .    .    .   .   jne	.LBB0_11
+[2,45]    .    .    .    .    .    D=eE-------------R  .    .    .    .    .    .    .   .   jmp	.LBB0_12
+[2,46]    .    .    .    .    .    D===eeeeeeeeE----R  .    .    .    .    .    .    .   .   vmovss	(%rdx,%rax,4), %xmm1
+[2,47]    .    .    .    .    .    D====eeeeeeeeeeeER  .    .    .    .    .    .    .   .   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[2,48]    .    .    .    .    .    .D==============eER .    .    .    .    .    .    .   .   vmovss	%xmm1, (%rsi,%rax,4)
+[2,49]    .    .    .    .    .    .DeE--------------R .    .    .    .    .    .    .   .   incq	%rax
+[2,50]    .    .    .    .    .    .D=eE-------------R .    .    .    .    .    .    .   .   cmpq	%rax, %rdi
+[2,51]    .    .    .    .    .    .D==eE------------R .    .    .    .    .    .    .   .   jne	.LBB0_3
+[2,52]    .    .    .    .    .    .DE---------------R .    .    .    .    .    .    .   .   vzeroupper
+[2,53]    .    .    .    .    .    .DeeeeeE----------R .    .    .    .    .    .    .   .   retq
+[3,0]     .    .    .    .    .    . DeE-------------R .    .    .    .    .    .    .   .   addq	$2, %rdi
+[3,1]     .    .    .    .    .    . D=eeeE----------R .    .    .    .    .    .    .   .   imulq	%rdi, %rdi
+[3,2]     .    .    .    .    .    . D====eE---------R .    .    .    .    .    .    .   .   testq	%rdi, %rdi
+[3,3]     .    .    .    .    .    . D=====eE---------R.    .    .    .    .    .    .   .   je	.LBB0_13
+[3,4]     .    .    .    .    .    . D====eE----------R.    .    .    .    .    .    .   .   cmpq	$8, %rdi
+[3,5]     .    .    .    .    .    . D=====eE---------R.    .    .    .    .    .    .   .   jae	.LBB0_4
+[3,6]     .    .    .    .    .    .  D---------------R.    .    .    .    .    .    .   .   xorl	%eax, %eax
+[3,7]     .    .    .    .    .    .  DeE-------------R.    .    .    .    .    .    .   .   jmp	.LBB0_3
+[3,8]     .    .    .    .    .    .  D===eE----------R.    .    .    .    .    .    .   .   cmpq	$64, %rdi
+[3,9]     .    .    .    .    .    .  D=====eE--------R.    .    .    .    .    .    .   .   jae	.LBB0_6
+[3,10]    .    .    .    .    .    .  D---------------R.    .    .    .    .    .    .   .   xorl	%eax, %eax
+[3,11]    .    .    .    .    .    .  D=eE------------R.    .    .    .    .    .    .   .   jmp	.LBB0_10
+[3,12]    .    .    .    .    .    .   D==eeE----------R    .    .    .    .    .    .   .   vbroadcastss	%xmm0, %zmm1
+[3,13]    .    .    .    .    .    .   D---------------R    .    .    .    .    .    .   .   movq	%rdi, %rax
+[3,14]    .    .    .    .    .    .   D==eE-----------R    .    .    .    .    .    .   .   andq	$-64, %rax
+[3,15]    .    .    .    .    .    .   D---------------R    .    .    .    .    .    .   .   xorl	%ecx, %ecx
+[3,16]    .    .    .    .    .    .   D=eeeeeeeeE-----R    .    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[3,17]    .    .    .    .    .    .   D=eeeeeeeeE-----R    .    .    .    .    .    .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[3,18]    .    .    .    .    .    .    D=eeeeeeeeE----R    .    .    .    .    .    .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[3,19]    .    .    .    .    .    .    D==eeeeeeeeE---R    .    .    .    .    .    .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[3,20]    .    .    .    .    .    .    D==eeeeeeeeeeeER    .    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[3,21]    .    .    .    .    .    .    D===eeeeeeeeeeeER   .    .    .    .    .    .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[3,22]    .    .    .    .    .    .    D====eeeeeeeeeeeER  .    .    .    .    .    .   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[3,23]    .    .    .    .    .    .    D=====eeeeeeeeeeeER .    .    .    .    .    .   .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[3,24]    .    .    .    .    .    .    .D============eE--R .    .    .    .    .    .   .   vmovups	%zmm2, (%rsi,%rcx,4)
+[3,25]    .    .    .    .    .    .    .D=============eE-R .    .    .    .    .    .   .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[3,26]    .    .    .    .    .    .    .D==============eER .    .    .    .    .    .   .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[3,27]    .    .    .    .    .    .    .D===============eER.    .    .    .    .    .   .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[3,28]    .    .    .    .    .    .    .D=eE--------------R.    .    .    .    .    .   .   addq	$64, %rcx
+[3,29]    .    .    .    .    .    .    .D==eE-------------R.    .    .    .    .    .   .   cmpq	%rcx, %rax
+[3,30]    .    .    .    .    .    .    . D==eE------------R.    .    .    .    .    .   .   jne	.LBB0_7
+[3,31]    .    .    .    .    .    .    . DeE--------------R.    .    .    .    .    .   .   cmpq	%rax, %rdi
+[3,32]    .    .    .    .    .    .    . D=eE-------------R.    .    .    .    .    .   .   je	.LBB0_13
+[3,33]    .    .    .    .    .    .    . DeE--------------R.    .    .    .    .    .   .   testb	$56, %dil
+[3,34]    .    .    .    .    .    .    . D==eE------------R.    .    .    .    .    .   .   je	.LBB0_3
+[3,35]    .    .    .    .    .    .    . DeeE-------------R.    .    .    .    .    .   .   vbroadcastss	%xmm0, %ymm1
+[3,36]    .    .    .    .    .    .    .  D----------------R    .    .    .    .    .   .   movq	%rax, %rcx
+[3,37]    .    .    .    .    .    .    .  D----------------R    .    .    .    .    .   .   movq	%rdi, %rax
+[3,38]    .    .    .    .    .    .    .  DeE--------------R    .    .    .    .    .   .   andq	$-8, %rax
+[3,39]    .    .    .    .    .    .    .  D===eeeeeeeeE----R    .    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %ymm2
+[3,40]    .    .    .    .    .    .    .  D====eeeeeeeeeeeER    .    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[3,41]    .    .    .    .    .    .    .  D===============eER   .    .    .    .    .   .   vmovups	%ymm2, (%rsi,%rcx,4)
+[3,42]    .    .    .    .    .    .    .   DeE--------------R   .    .    .    .    .   .   addq	$8, %rcx
+[3,43]    .    .    .    .    .    .    .   D=eE-------------R   .    .    .    .    .   .   cmpq	%rcx, %rax
+[3,44]    .    .    .    .    .    .    .   D==eE------------R   .    .    .    .    .   .   jne	.LBB0_11
+[3,45]    .    .    .    .    .    .    .   D=eE-------------R   .    .    .    .    .   .   jmp	.LBB0_12
+[3,46]    .    .    .    .    .    .    .   D====eeeeeeeeE---R   .    .    .    .    .   .   vmovss	(%rdx,%rax,4), %xmm1
+[3,47]    .    .    .    .    .    .    .   D=====eeeeeeeeeeeER  .    .    .    .    .   .   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[3,48]    .    .    .    .    .    .    .    D===============eER .    .    .    .    .   .   vmovss	%xmm1, (%rsi,%rax,4)
+[3,49]    .    .    .    .    .    .    .    DeE---------------R .    .    .    .    .   .   incq	%rax
+[3,50]    .    .    .    .    .    .    .    D=eE--------------R .    .    .    .    .   .   cmpq	%rax, %rdi
+[3,51]    .    .    .    .    .    .    .    D==eE-------------R .    .    .    .    .   .   jne	.LBB0_3
+[3,52]    .    .    .    .    .    .    .    DE----------------R .    .    .    .    .   .   vzeroupper
+[3,53]    .    .    .    .    .    .    .    DeeeeeE-----------R .    .    .    .    .   .   retq
+[4,0]     .    .    .    .    .    .    .    .DeE--------------R .    .    .    .    .   .   addq	$2, %rdi
+[4,1]     .    .    .    .    .    .    .    .D=eeeE-----------R .    .    .    .    .   .   imulq	%rdi, %rdi
+[4,2]     .    .    .    .    .    .    .    .D====eE----------R .    .    .    .    .   .   testq	%rdi, %rdi
+[4,3]     .    .    .    .    .    .    .    .D=====eE----------R.    .    .    .    .   .   je	.LBB0_13
+[4,4]     .    .    .    .    .    .    .    .D====eE-----------R.    .    .    .    .   .   cmpq	$8, %rdi
+[4,5]     .    .    .    .    .    .    .    .D=====eE----------R.    .    .    .    .   .   jae	.LBB0_4
+[4,6]     .    .    .    .    .    .    .    . D----------------R.    .    .    .    .   .   xorl	%eax, %eax
+[4,7]     .    .    .    .    .    .    .    . DeE--------------R.    .    .    .    .   .   jmp	.LBB0_3
+[4,8]     .    .    .    .    .    .    .    . D===eE-----------R.    .    .    .    .   .   cmpq	$64, %rdi
+[4,9]     .    .    .    .    .    .    .    . D=====eE---------R.    .    .    .    .   .   jae	.LBB0_6
+[4,10]    .    .    .    .    .    .    .    . D----------------R.    .    .    .    .   .   xorl	%eax, %eax
+[4,11]    .    .    .    .    .    .    .    . D=eE-------------R.    .    .    .    .   .   jmp	.LBB0_10
+[4,12]    .    .    .    .    .    .    .    .  DeeE-------------R    .    .    .    .   .   vbroadcastss	%xmm0, %zmm1
+[4,13]    .    .    .    .    .    .    .    .  D----------------R    .    .    .    .   .   movq	%rdi, %rax
+[4,14]    .    .    .    .    .    .    .    .  D==eE------------R    .    .    .    .   .   andq	$-64, %rax
+[4,15]    .    .    .    .    .    .    .    .  D----------------R    .    .    .    .   .   xorl	%ecx, %ecx
+[4,16]    .    .    .    .    .    .    .    .  DeeeeeeeeE-------R    .    .    .    .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[4,17]    .    .    .    .    .    .    .    .  D==eeeeeeeeE-----R    .    .    .    .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[4,18]    .    .    .    .    .    .    .    .   D==eeeeeeeeE----R    .    .    .    .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[4,19]    .    .    .    .    .    .    .    .   D==eeeeeeeeE----R    .    .    .    .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[4,20]    .    .    .    .    .    .    .    .   D===eeeeeeeeeeeER    .    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[4,21]    .    .    .    .    .    .    .    .   D===eeeeeeeeeeeE-R   .    .    .    .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[4,22]    .    .    .    .    .    .    .    .   D=====eeeeeeeeeeeER  .    .    .    .   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[4,23]    .    .    .    .    .    .    .    .   D======eeeeeeeeeeeER .    .    .    .   .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[4,24]    .    .    .    .    .    .    .    .    D=============eE--R .    .    .    .   .   vmovups	%zmm2, (%rsi,%rcx,4)
+[4,25]    .    .    .    .    .    .    .    .    D==============eE-R .    .    .    .   .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[4,26]    .    .    .    .    .    .    .    .    D===============eER .    .    .    .   .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[4,27]    .    .    .    .    .    .    .    .    D================eER.    .    .    .   .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[4,28]    .    .    .    .    .    .    .    .    D=eE---------------R.    .    .    .   .   addq	$64, %rcx
+[4,29]    .    .    .    .    .    .    .    .    D==eE--------------R.    .    .    .   .   cmpq	%rcx, %rax
+[4,30]    .    .    .    .    .    .    .    .    .D==eE-------------R.    .    .    .   .   jne	.LBB0_7
+[4,31]    .    .    .    .    .    .    .    .    .DeE---------------R.    .    .    .   .   cmpq	%rax, %rdi
+[4,32]    .    .    .    .    .    .    .    .    .D=eE--------------R.    .    .    .   .   je	.LBB0_13
+[4,33]    .    .    .    .    .    .    .    .    .DeE---------------R.    .    .    .   .   testb	$56, %dil
+[4,34]    .    .    .    .    .    .    .    .    .D==eE-------------R.    .    .    .   .   je	.LBB0_3
+[4,35]    .    .    .    .    .    .    .    .    .DeeE--------------R.    .    .    .   .   vbroadcastss	%xmm0, %ymm1
+[4,36]    .    .    .    .    .    .    .    .    . D-----------------R    .    .    .   .   movq	%rax, %rcx
+[4,37]    .    .    .    .    .    .    .    .    . D-----------------R    .    .    .   .   movq	%rdi, %rax
+[4,38]    .    .    .    .    .    .    .    .    . DeE---------------R    .    .    .   .   andq	$-8, %rax
+[4,39]    .    .    .    .    .    .    .    .    . D=eeeeeeeeE-------R    .    .    .   .   vmovups	(%rdx,%rcx,4), %ymm2
+[4,40]    .    .    .    .    .    .    .    .    . D====eeeeeeeeeeeE-R    .    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[4,41]    .    .    .    .    .    .    .    .    . D===============eER    .    .    .   .   vmovups	%ymm2, (%rsi,%rcx,4)
+[4,42]    .    .    .    .    .    .    .    .    .  DeE--------------R    .    .    .   .   addq	$8, %rcx
+[4,43]    .    .    .    .    .    .    .    .    .  D=eE-------------R    .    .    .   .   cmpq	%rcx, %rax
+[4,44]    .    .    .    .    .    .    .    .    .  D==eE------------R    .    .    .   .   jne	.LBB0_11
+[4,45]    .    .    .    .    .    .    .    .    .  D=eE--------------R   .    .    .   .   jmp	.LBB0_12
+[4,46]    .    .    .    .    .    .    .    .    .  D====eeeeeeeeE----R   .    .    .   .   vmovss	(%rdx,%rax,4), %xmm1
+[4,47]    .    .    .    .    .    .    .    .    .  D=====eeeeeeeeeeeER   .    .    .   .   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[4,48]    .    .    .    .    .    .    .    .    .   D===============eER  .    .    .   .   vmovss	%xmm1, (%rsi,%rax,4)
+[4,49]    .    .    .    .    .    .    .    .    .   DeE---------------R  .    .    .   .   incq	%rax
+[4,50]    .    .    .    .    .    .    .    .    .   D=eE--------------R  .    .    .   .   cmpq	%rax, %rdi
+[4,51]    .    .    .    .    .    .    .    .    .   D==eE-------------R  .    .    .   .   jne	.LBB0_3
+[4,52]    .    .    .    .    .    .    .    .    .   DE----------------R  .    .    .   .   vzeroupper
+[4,53]    .    .    .    .    .    .    .    .    .   DeeeeeE-----------R  .    .    .   .   retq
+[5,0]     .    .    .    .    .    .    .    .    .    DeE--------------R  .    .    .   .   addq	$2, %rdi
+[5,1]     .    .    .    .    .    .    .    .    .    D=eeeE-----------R  .    .    .   .   imulq	%rdi, %rdi
+[5,2]     .    .    .    .    .    .    .    .    .    D====eE----------R  .    .    .   .   testq	%rdi, %rdi
+[5,3]     .    .    .    .    .    .    .    .    .    D=====eE----------R .    .    .   .   je	.LBB0_13
+[5,4]     .    .    .    .    .    .    .    .    .    D====eE-----------R .    .    .   .   cmpq	$8, %rdi
+[5,5]     .    .    .    .    .    .    .    .    .    D=====eE----------R .    .    .   .   jae	.LBB0_4
+[5,6]     .    .    .    .    .    .    .    .    .    .D----------------R .    .    .   .   xorl	%eax, %eax
+[5,7]     .    .    .    .    .    .    .    .    .    .DeE--------------R .    .    .   .   jmp	.LBB0_3
+[5,8]     .    .    .    .    .    .    .    .    .    .D===eE-----------R .    .    .   .   cmpq	$64, %rdi
+[5,9]     .    .    .    .    .    .    .    .    .    .D=====eE---------R .    .    .   .   jae	.LBB0_6
+[5,10]    .    .    .    .    .    .    .    .    .    .D----------------R .    .    .   .   xorl	%eax, %eax
+[5,11]    .    .    .    .    .    .    .    .    .    .D=eE-------------R .    .    .   .   jmp	.LBB0_10
+[5,12]    .    .    .    .    .    .    .    .    .    . DeeE-------------R.    .    .   .   vbroadcastss	%xmm0, %zmm1
+[5,13]    .    .    .    .    .    .    .    .    .    . D----------------R.    .    .   .   movq	%rdi, %rax
+[5,14]    .    .    .    .    .    .    .    .    .    . D==eE------------R.    .    .   .   andq	$-64, %rax
+[5,15]    .    .    .    .    .    .    .    .    .    . D----------------R.    .    .   .   xorl	%ecx, %ecx
+[5,16]    .    .    .    .    .    .    .    .    .    . DeeeeeeeeE-------R.    .    .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[5,17]    .    .    .    .    .    .    .    .    .    . D==eeeeeeeeE-----R.    .    .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[5,18]    .    .    .    .    .    .    .    .    .    .  D=eeeeeeeeE-----R.    .    .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[5,19]    .    .    .    .    .    .    .    .    .    .  D==eeeeeeeeE----R.    .    .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[5,20]    .    .    .    .    .    .    .    .    .    .  D===eeeeeeeeeeeER.    .    .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[5,21]    .    .    .    .    .    .    .    .    .    .  D===eeeeeeeeeeeE-R    .    .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[5,22]    .    .    .    .    .    .    .    .    .    .  D=====eeeeeeeeeeeER   .    .   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[5,23]    .    .    .    .    .    .    .    .    .    .  D======eeeeeeeeeeeER  .    .   .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[5,24]    .    .    .    .    .    .    .    .    .    .   D=============eE--R  .    .   .   vmovups	%zmm2, (%rsi,%rcx,4)
+[5,25]    .    .    .    .    .    .    .    .    .    .   D==============eE-R  .    .   .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[5,26]    .    .    .    .    .    .    .    .    .    .   D===============eER  .    .   .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[5,27]    .    .    .    .    .    .    .    .    .    .   D================eER .    .   .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[5,28]    .    .    .    .    .    .    .    .    .    .   D=eE---------------R .    .   .   addq	$64, %rcx
+[5,29]    .    .    .    .    .    .    .    .    .    .   D==eE--------------R .    .   .   cmpq	%rcx, %rax
+[5,30]    .    .    .    .    .    .    .    .    .    .    D==eE-------------R .    .   .   jne	.LBB0_7
+[5,31]    .    .    .    .    .    .    .    .    .    .    DeE---------------R .    .   .   cmpq	%rax, %rdi
+[5,32]    .    .    .    .    .    .    .    .    .    .    D=eE--------------R .    .   .   je	.LBB0_13
+[5,33]    .    .    .    .    .    .    .    .    .    .    DeE---------------R .    .   .   testb	$56, %dil
+[5,34]    .    .    .    .    .    .    .    .    .    .    D==eE-------------R .    .   .   je	.LBB0_3
+[5,35]    .    .    .    .    .    .    .    .    .    .    DeeE--------------R .    .   .   vbroadcastss	%xmm0, %ymm1
+[5,36]    .    .    .    .    .    .    .    .    .    .    .D-----------------R.    .   .   movq	%rax, %rcx
+[5,37]    .    .    .    .    .    .    .    .    .    .    .D-----------------R.    .   .   movq	%rdi, %rax
+[5,38]    .    .    .    .    .    .    .    .    .    .    .DeE---------------R.    .   .   andq	$-8, %rax
+[5,39]    .    .    .    .    .    .    .    .    .    .    .D=eeeeeeeeE-------R.    .   .   vmovups	(%rdx,%rcx,4), %ymm2
+[5,40]    .    .    .    .    .    .    .    .    .    .    .D====eeeeeeeeeeeE-R.    .   .   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[5,41]    .    .    .    .    .    .    .    .    .    .    .D===============eER.    .   .   vmovups	%ymm2, (%rsi,%rcx,4)
+[5,42]    .    .    .    .    .    .    .    .    .    .    . DeE--------------R.    .   .   addq	$8, %rcx
+[5,43]    .    .    .    .    .    .    .    .    .    .    . D=eE-------------R.    .   .   cmpq	%rcx, %rax
+[5,44]    .    .    .    .    .    .    .    .    .    .    . D==eE------------R.    .   .   jne	.LBB0_11
+[5,45]    .    .    .    .    .    .    .    .    .    .    . D=eE--------------R    .   .   jmp	.LBB0_12
+[5,46]    .    .    .    .    .    .    .    .    .    .    . DeeeeeeeeE--------R    .   .   vmovss	(%rdx,%rax,4), %xmm1
+[5,47]    .    .    .    .    .    .    .    .    .    .    . D====eeeeeeeeeeeE-R    .   .   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[5,48]    .    .    .    .    .    .    .    .    .    .    .  D==============eER    .   .   vmovss	%xmm1, (%rsi,%rax,4)
+[5,49]    .    .    .    .    .    .    .    .    .    .    .  DeE--------------R    .   .   incq	%rax
+[5,50]    .    .    .    .    .    .    .    .    .    .    .  D=eE-------------R    .   .   cmpq	%rax, %rdi
+[5,51]    .    .    .    .    .    .    .    .    .    .    .  D==eE------------R    .   .   jne	.LBB0_3
+[5,52]    .    .    .    .    .    .    .    .    .    .    .  DE---------------R    .   .   vzeroupper
+[5,53]    .    .    .    .    .    .    .    .    .    .    .  DeeeeeE----------R    .   .   retq
+[6,0]     .    .    .    .    .    .    .    .    .    .    .   DeE--------------R   .   .   addq	$2, %rdi
+[6,1]     .    .    .    .    .    .    .    .    .    .    .   D=eeeE-----------R   .   .   imulq	%rdi, %rdi
+[6,2]     .    .    .    .    .    .    .    .    .    .    .   D====eE----------R   .   .   testq	%rdi, %rdi
+[6,3]     .    .    .    .    .    .    .    .    .    .    .   D=====eE---------R   .   .   je	.LBB0_13
+[6,4]     .    .    .    .    .    .    .    .    .    .    .   D====eE----------R   .   .   cmpq	$8, %rdi
+[6,5]     .    .    .    .    .    .    .    .    .    .    .   D=====eE---------R   .   .   jae	.LBB0_4
+[6,6]     .    .    .    .    .    .    .    .    .    .    .    D---------------R   .   .   xorl	%eax, %eax
+[6,7]     .    .    .    .    .    .    .    .    .    .    .    DeE-------------R   .   .   jmp	.LBB0_3
+[6,8]     .    .    .    .    .    .    .    .    .    .    .    D===eE----------R   .   .   cmpq	$64, %rdi
+[6,9]     .    .    .    .    .    .    .    .    .    .    .    D=====eE---------R  .   .   jae	.LBB0_6
+[6,10]    .    .    .    .    .    .    .    .    .    .    .    D----------------R  .   .   xorl	%eax, %eax
+[6,11]    .    .    .    .    .    .    .    .    .    .    .    D=eE-------------R  .   .   jmp	.LBB0_10
+[6,12]    .    .    .    .    .    .    .    .    .    .    .    .D==eeE----------R  .   .   vbroadcastss	%xmm0, %zmm1
+[6,13]    .    .    .    .    .    .    .    .    .    .    .    .D---------------R  .   .   movq	%rdi, %rax
+[6,14]    .    .    .    .    .    .    .    .    .    .    .    .D==eE-----------R  .   .   andq	$-64, %rax
+[6,15]    .    .    .    .    .    .    .    .    .    .    .    .D---------------R  .   .   xorl	%ecx, %ecx
+[6,16]    .    .    .    .    .    .    .    .    .    .    .    .D=eeeeeeeeE-----R  .   .   vmovups	(%rdx,%rcx,4), %zmm2
+[6,17]    .    .    .    .    .    .    .    .    .    .    .    .D==eeeeeeeeE----R  .   .   vmovups	64(%rdx,%rcx,4), %zmm3
+[6,18]    .    .    .    .    .    .    .    .    .    .    .    . D=eeeeeeeeE-----R .   .   vmovups	128(%rdx,%rcx,4), %zmm4
+[6,19]    .    .    .    .    .    .    .    .    .    .    .    . D==eeeeeeeeE----R .   .   vmovups	192(%rdx,%rcx,4), %zmm5
+[6,20]    .    .    .    .    .    .    .    .    .    .    .    . D===eeeeeeeeeeeER .   .   vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+[6,21]    .    .    .    .    .    .    .    .    .    .    .    . D===eeeeeeeeeeeER .   .   vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+[6,22]    .    .    .    .    .    .    .    .    .    .    .    . D=====eeeeeeeeeeeER   .   vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+[6,23]    .    .    .    .    .    .    .    .    .    .    .    . D======eeeeeeeeeeeER  .   vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+[6,24]    .    .    .    .    .    .    .    .    .    .    .    .  D=============eE--R  .   vmovups	%zmm2, (%rsi,%rcx,4)
+[6,25]    .    .    .    .    .    .    .    .    .    .    .    .  D==============eE-R  .   vmovups	%zmm3, 64(%rsi,%rcx,4)
+[6,26]    .    .    .    .    .    .    .    .    .    .    .    .  D===============eER  .   vmovups	%zmm4, 128(%rsi,%rcx,4)
+[6,27]    .    .    .    .    .    .    .    .    .    .    .    .  D================eER .   vmovups	%zmm5, 192(%rsi,%rcx,4)
+[6,28]    .    .    .    .    .    .    .    .    .    .    .    .  D=eE---------------R .   addq	$64, %rcx
+[6,29]    .    .    .    .    .    .    .    .    .    .    .    .  D==eE--------------R .   cmpq	%rcx, %rax
+[6,30]    .    .    .    .    .    .    .    .    .    .    .    .   D==eE-------------R .   jne	.LBB0_7
+[6,31]    .    .    .    .    .    .    .    .    .    .    .    .   DeE---------------R .   cmpq	%rax, %rdi
+[6,32]    .    .    .    .    .    .    .    .    .    .    .    .   D=eE--------------R .   je	.LBB0_13
+[6,33]    .    .    .    .    .    .    .    .    .    .    .    .   DeE---------------R .   testb	$56, %dil
+[6,34]    .    .    .    .    .    .    .    .    .    .    .    .   D==eE-------------R .   je	.LBB0_3
+[6,35]    .    .    .    .    .    .    .    .    .    .    .    .   DeeE--------------R .   vbroadcastss	%xmm0, %ymm1
+[6,36]    .    .    .    .    .    .    .    .    .    .    .    .    D-----------------R.   movq	%rax, %rcx
+[6,37]    .    .    .    .    .    .    .    .    .    .    .    .    D-----------------R.   movq	%rdi, %rax
+[6,38]    .    .    .    .    .    .    .    .    .    .    .    .    DeE---------------R.   andq	$-8, %rax
+[6,39]    .    .    .    .    .    .    .    .    .    .    .    .    D=eeeeeeeeE-------R.   vmovups	(%rdx,%rcx,4), %ymm2
+[6,40]    .    .    .    .    .    .    .    .    .    .    .    .    D====eeeeeeeeeeeE-R.   vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+[6,41]    .    .    .    .    .    .    .    .    .    .    .    .    D===============eER.   vmovups	%ymm2, (%rsi,%rcx,4)
+[6,42]    .    .    .    .    .    .    .    .    .    .    .    .    .DeE--------------R.   addq	$8, %rcx
+[6,43]    .    .    .    .    .    .    .    .    .    .    .    .    .D=eE-------------R.   cmpq	%rcx, %rax
+[6,44]    .    .    .    .    .    .    .    .    .    .    .    .    .D==eE------------R.   jne	.LBB0_11
+[6,45]    .    .    .    .    .    .    .    .    .    .    .    .    .D=eE--------------R   jmp	.LBB0_12
+[6,46]    .    .    .    .    .    .    .    .    .    .    .    .    .DeeeeeeeeE--------R   vmovss	(%rdx,%rax,4), %xmm1
+[6,47]    .    .    .    .    .    .    .    .    .    .    .    .    .D====eeeeeeeeeeeE-R   vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+[6,48]    .    .    .    .    .    .    .    .    .    .    .    .    . D==============eER   vmovss	%xmm1, (%rsi,%rax,4)
+[6,49]    .    .    .    .    .    .    .    .    .    .    .    .    . DeE--------------R   incq	%rax
+[6,50]    .    .    .    .    .    .    .    .    .    .    .    .    . D=eE-------------R   cmpq	%rax, %rdi
+[6,51]    .    .    .    .    .    .    .    .    .    .    .    .    . D==eE------------R   jne	.LBB0_3
+[6,52]    .    .    .    .    .    .    .    .    .    .    .    .    . DE---------------R   vzeroupper
+[6,53]    .    .    .    .    .    .    .    .    .    .    .    .    . DeeeeeE----------R   retq
+Truncated display due to cycle limit
+
+
+Average Wait times (based on the timeline view):
+[0]: Executions
+[1]: Average time spent waiting in a scheduler's queue
+[2]: Average time spent waiting in a scheduler's queue while ready
+[3]: Average time elapsed from WB until retire stage
+
+      [0]    [1]    [2]    [3]
+0.     10    1.0    1.0    12.2      addq	$2, %rdi
+1.     10    2.0    0.0    9.5       imulq	%rdi, %rdi
+2.     10    5.0    0.0    8.6       testq	%rdi, %rdi
+3.     10    6.0    0.0    8.1       je	.LBB0_13
+4.     10    5.0    0.0    9.1       cmpq	$8, %rdi
+5.     10    6.0    0.0    8.1       jae	.LBB0_4
+6.     10    0.0    0.0    14.1      xorl	%eax, %eax
+7.     10    1.0    1.0    12.1      jmp	.LBB0_3
+8.     10    4.0    0.0    9.1       cmpq	$64, %rdi
+9.     10    6.0    1.0    7.7       jae	.LBB0_6
+10.    10    0.0    0.0    14.7      xorl	%eax, %eax
+11.    10    1.9    1.9    11.8      jmp	.LBB0_10
+12.    10    2.2    2.2    9.9       vbroadcastss	%xmm0, %zmm1
+13.    10    0.0    0.0    14.1      movq	%rdi, %rax
+14.    10    3.0    0.0    10.1      andq	$-64, %rax
+15.    10    0.0    0.0    14.1      xorl	%ecx, %ecx
+16.    10    1.6    1.6    4.8       vmovups	(%rdx,%rcx,4), %zmm2
+17.    10    2.4    2.4    4.0       vmovups	64(%rdx,%rcx,4), %zmm3
+18.    10    2.2    2.2    3.8       vmovups	128(%rdx,%rcx,4), %zmm4
+19.    10    2.5    2.5    3.5       vmovups	192(%rdx,%rcx,4), %zmm5
+20.    10    3.4    1.8    0.0       vfmadd213ps	(%rsi,%rcx,4), %zmm1, %zmm2
+21.    10    3.5    1.1    0.3       vfmadd213ps	64(%rsi,%rcx,4), %zmm1, %zmm3
+22.    10    5.4    2.2    0.0       vfmadd213ps	128(%rsi,%rcx,4), %zmm1, %zmm4
+23.    10    6.3    2.8    0.0       vfmadd213ps	192(%rsi,%rcx,4), %zmm1, %zmm5
+24.    10    13.4   0.0    1.9       vmovups	%zmm2, (%rsi,%rcx,4)
+25.    10    14.4   0.9    0.9       vmovups	%zmm3, 64(%rsi,%rcx,4)
+26.    10    15.4   0.0    0.0       vmovups	%zmm4, 128(%rsi,%rcx,4)
+27.    10    16.4   0.1    0.0       vmovups	%zmm5, 192(%rsi,%rcx,4)
+28.    10    2.0    2.0    14.4      addq	$64, %rcx
+29.    10    3.0    0.0    13.4      cmpq	%rcx, %rax
+30.    10    3.0    0.0    12.4      jne	.LBB0_7
+31.    10    1.0    0.0    14.4      cmpq	%rax, %rdi
+32.    10    2.0    0.0    13.4      je	.LBB0_13
+33.    10    1.0    1.0    14.4      testb	$56, %dil
+34.    10    3.0    1.0    12.4      je	.LBB0_3
+35.    10    1.6    1.6    12.8      vbroadcastss	%xmm0, %ymm1
+36.    10    0.0    0.0    16.4      movq	%rax, %rcx
+37.    10    0.0    0.0    16.4      movq	%rdi, %rax
+38.    10    1.0    1.0    14.4      andq	$-8, %rax
+39.    10    2.5    0.5    5.9       vmovups	(%rdx,%rcx,4), %ymm2
+40.    10    4.7    1.2    0.7       vfmadd213ps	(%rsi,%rcx,4), %ymm1, %ymm2
+41.    10    15.7   0.0    0.0       vmovups	%ymm2, (%rsi,%rcx,4)
+42.    10    1.0    0.0    13.7      addq	$8, %rcx
+43.    10    2.0    0.0    12.7      cmpq	%rcx, %rax
+44.    10    3.0    0.0    11.7      jne	.LBB0_11
+45.    10    2.0    2.0    13.4      jmp	.LBB0_12
+46.    10    2.4    1.4    6.0       vmovss	(%rdx,%rax,4), %xmm1
+47.    10    5.0    1.6    0.6       vfmadd213ss	(%rsi,%rax,4), %xmm0, %xmm1
+48.    10    15.0   0.0    0.0       vmovss	%xmm1, (%rsi,%rax,4)
+49.    10    1.0    1.0    14.0      incq	%rax
+50.    10    2.0    0.0    13.0      cmpq	%rax, %rdi
+51.    10    3.0    0.0    12.0      jne	.LBB0_3
+52.    10    1.0    1.0    15.0      vzeroupper
+53.    10    1.0    1.0    10.0      retq
+       10    3.9    0.8    8.8       <total>
