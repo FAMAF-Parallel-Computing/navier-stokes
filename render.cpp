@@ -115,7 +115,7 @@ void drawVelocity(AppState *app) {
       float y = app->height - (i - .5) * cellH;
 
       uint64_t idx = IX(i, j, N);
-      if (app->st.vx[idx] + app->st.vy[idx] > .01) {
+      if (app->st.vx[idx] + app->st.vy[idx] > .005) {
         float x2 = x + app->st.vx[idx];
         float y2 = y - app->st.vy[idx];
 
