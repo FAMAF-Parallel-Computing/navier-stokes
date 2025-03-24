@@ -21,25 +21,18 @@ static void addSource(const uint64_t n, float *__restrict x,
 // The order matters :D
 static void setBoundary(const uint64_t n, const Boundary b,
                         float *__restrict x) {
-  // rows
-  for (uint64_t j = 1; j <= n; j++) {
-    x[IX(0, j, n)] = b == Boundary::VERTICAL ? -x[IX(1, j, n)] : x[IX(1, j, n)];
-    x[IX(n + 1, j, n)] =
-        b == Boundary::VERTICAL ? -x[IX(n, j, n)] : x[IX(n, j, n)];
+  for (uint64_t k = 1; k <= n; k++) {
+    x[IX(k, 0, n)] = b == Boundary::VERTICAL ? -x[IX(k, 1, n)] : x[IX(k, 1, n)];
+    x[IX(k, n + 1, n)] =
+        b == Boundary::VERTICAL ? -x[IX(k, n, n)] : x[IX(k, n, n)];
+    x[IX(0, k, n)] =
+        b == Boundary::HORIZONTAL ? -x[IX(1, k, n)] : x[IX(1, k, n)];
+    x[IX(n + 1, k, n)] =
+        b == Boundary::HORIZONTAL ? -x[IX(n, k, n)] : x[IX(n, k, n)];
   }
-
-  // cols
-  for (uint64_t i = 1; i <= n; i++) {
-    x[IX(i, 0, n)] =
-        b == Boundary::HORIZONTAL ? -x[IX(i, 1, n)] : x[IX(i, 1, n)];
-    x[IX(i, n + 1, n)] =
-        b == Boundary::HORIZONTAL ? -x[IX(i, n, n)] : x[IX(i, n, n)];
-  }
-
-  // corners
   x[IX(0, 0, n)] = .5f * (x[IX(1, 0, n)] + x[IX(0, 1, n)]);
-  x[IX(0, n + 1, n)] = .5f * (x[IX(1, n + 1, n)] + x[IX(0, n, n)]);
   x[IX(n + 1, 0, n)] = .5f * (x[IX(n, 0, n)] + x[IX(n + 1, 1, n)]);
+  x[IX(0, n + 1, n)] = .5f * (x[IX(1, n + 1, n)] + x[IX(0, n, n)]);
   x[IX(n + 1, n + 1, n)] = .5f * (x[IX(n, n + 1, n)] + x[IX(n + 1, n, n)]);
 }
 
@@ -99,8 +92,9 @@ static void advect(const uint64_t n, const Boundary b, float *d,
   setBoundary(n, b, d);
 }
 
-static void project(const uint64_t n, float *__restrict vx, float *__restrict vy,
-                    float *__restrict p, float *__restrict div) {
+static void project(const uint64_t n, float *__restrict vx,
+                    float *__restrict vy, float *__restrict p,
+                    float *__restrict div) {
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
       div[IX(i, j, n)] = -.5f *
@@ -122,8 +116,8 @@ static void project(const uint64_t n, float *__restrict vx, float *__restrict vy
     }
   }
 
-  setBoundary(n, Boundary::HORIZONTAL, vx);
-  setBoundary(n, Boundary::VERTICAL, vy);
+  setBoundary(n, Boundary::VERTICAL, vx);
+  setBoundary(n, Boundary::HORIZONTAL, vy);
 }
 
 void velocityStep(const uint64_t n, float *__restrict vx, float *__restrict vy,
@@ -132,17 +126,17 @@ void velocityStep(const uint64_t n, float *__restrict vx, float *__restrict vy,
   addSource(n, vx, vxPrev, dt);
   addSource(n, vy, vyPrev, dt);
   swap(vxPrev, vx);
-  diffuse(n, Boundary::HORIZONTAL, vx, vxPrev, visc, dt);
+  diffuse(n, Boundary::VERTICAL, vx, vxPrev, visc, dt);
   swap(vyPrev, vy);
-  diffuse(n, Boundary::VERTICAL, vy, vyPrev, visc, dt);
+  diffuse(n, Boundary::HORIZONTAL, vy, vyPrev, visc, dt);
   project(n, vx, vy, vxPrev, vyPrev);
   swap(vxPrev, vx);
   swap(vyPrev, vy);
   // This can cause to violate __restrict
   // check whether calls made by advect alias functions with __restrict vars
   // UB?
-  advect(n, Boundary::HORIZONTAL, vx, vxPrev, vxPrev, vyPrev, dt);
-  advect(n, Boundary::VERTICAL, vy, vyPrev, vxPrev, vyPrev, dt);
+  advect(n, Boundary::VERTICAL, vx, vxPrev, vxPrev, vyPrev, dt);
+  advect(n, Boundary::HORIZONTAL, vy, vyPrev, vxPrev, vyPrev, dt);
   project(n, vx, vy, vxPrev, vyPrev);
 }
 

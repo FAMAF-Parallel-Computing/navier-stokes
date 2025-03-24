@@ -83,8 +83,8 @@ static void react(const uint64_t N, const float force, const float source,
 
 static void drawDensity(AppState *app) {
   uint64_t N = app->p.N;
-  float cellW = static_cast<float>(app->width) / N;
-  float cellH = static_cast<float>(app->height) / N;
+  float cellW = static_cast<float>(app->width) / (N - 1);
+  float cellH = static_cast<float>(app->height) / (N - 1);
 
   for (uint64_t i = 1; i <= N; i++) {
     for (uint64_t j = 1; j <= N; j++) {
