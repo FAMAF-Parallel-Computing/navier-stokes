@@ -154,7 +154,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
   auto *app = new AppState;
   if (argc == 1) {
-    app->p.N = 128;
+    app->p.N = 1024;
     app->p.dt = .1;
     app->p.diff = 0;
     app->p.visc = 0;

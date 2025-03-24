@@ -113,7 +113,7 @@ int main(int argc, char **argv) {
     params.visc = 0;
     params.force = 5;
     params.source = 100;
-    params.steps = 2048; // Think a better default ;D
+    params.steps = 1L<<30; // Think a better default ;D
     println(R"(Using defaults:
     N = {}
     dt = {}

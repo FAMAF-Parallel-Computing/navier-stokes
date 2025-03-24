@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_package(SDL3 3.2 REQUIRED CONFIG)
+find_package(OpenMP REQUIRED)
 
 # have multiple libraries
 # feature?: ship some of them for a target
@@ -17,6 +18,10 @@ add_library(generic_solver)
 target_sources(generic_solver
   PRIVATE
   solver/generic.cpp
+)
+target_link_libraries(generic_solver
+  PRIVATE
+  OpenMP::OpenMP_CXX
 )
 
 add_executable(navier-stokes-headless)

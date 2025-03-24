@@ -12,6 +12,7 @@ enum class Boundary { NONE = 0, VERTICAL = 1, HORIZONTAL = 2 };
 static void addSource(const uint64_t n, float *__restrict x,
                       const float *__restrict s, const float dt) {
   const uint64_t size = (n + 2) * (n + 2);
+  #pragma omp parallel for schedule(static)
   for (uint64_t i = 0; i < size; i++) {
     x[i] += dt * s[i];
   }
@@ -39,6 +40,7 @@ static void setBoundary(const uint64_t n, const Boundary b,
 static void linearSolve(const uint64_t n, const Boundary b, float *__restrict x,
                         const float *__restrict xPrev, const float a,
                         const float c) {
+  #pragma omp parallel for schedule(static)
   for (uint32_t k = 0; k < 20; k++) {
     for (uint64_t i = 1; i <= n; i++) {
       for (uint64_t j = 1; j <= n; j++) {
@@ -64,6 +66,7 @@ static void advect(const uint64_t n, const Boundary b, float *d,
                    float dt) {
   const float dt0 = dt * n;
 
+  #pragma omp parallel for collapse(2) schedule(static)
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
       float x = j - dt0 * vx[IX(i, j, n)];
@@ -95,6 +98,7 @@ static void advect(const uint64_t n, const Boundary b, float *d,
 static void project(const uint64_t n, float *__restrict vx,
                     float *__restrict vy, float *__restrict p,
                     float *__restrict div) {
+  #pragma omp parallel for collapse(2) schedule(static)
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
       div[IX(i, j, n)] = -.5f *
@@ -109,6 +113,7 @@ static void project(const uint64_t n, float *__restrict vx,
   setBoundary(n, Boundary::NONE, p);
   linearSolve(n, Boundary::NONE, p, div, 1, 4);
 
+  #pragma omp parallel for collapse(2) schedule(static)
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
       vx[IX(i, j, n)] -= .5f * n * (p[IX(i, j + 1, n)] - p[IX(i, j - 1, n)]);
