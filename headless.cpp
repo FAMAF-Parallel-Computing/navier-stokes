@@ -1,7 +1,6 @@
 #include <chrono>
 #include <cstdint>
 #include <print>
-#include <thread>
 
 #include "solver/solver.hpp"
 
@@ -71,16 +70,22 @@ static StepStats step(const NavierStokesParams &p,
   const auto reactEnd = chrono::steady_clock::now();
   const chrono::duration<double, nano> reactTime = reactEnd - reactBegin;
 
+  // println("React Time {}", reactTime / (p.N * p.N));
+
   const auto velocityBegin = chrono::steady_clock::now();
   velocityStep(p.N, st.vx, st.vy, st.vxPrev, st.vyPrev, p.visc, p.dt);
   const auto velocityEnd = chrono::steady_clock::now();
   const chrono::duration<double, nano> velocityTime =
       velocityEnd - velocityBegin;
 
+  // println("Velocity Time {}", velocityTime / (p.N * p.N));
+
   const auto densityBegin = chrono::steady_clock::now();
   densityStep(p.N, st.density, st.densityPrev, st.vx, st.vy, p.diff, p.dt);
   const auto densityEnd = chrono::steady_clock::now();
   const chrono::duration<double, nano> densityTime = densityEnd - densityBegin;
+
+  // println("Density Time {}", densityTime / (p.N * p.N));
 
   return {reactTime, velocityTime, densityTime};
 }
@@ -108,7 +113,7 @@ int main(int argc, char **argv) {
     params.visc = 0;
     params.force = 5;
     params.source = 100;
-    params.steps = 1L << 30; // Think a better default ;D
+    params.steps = 2048; // Think a better default ;D
     println(R"(Using defaults:
     N = {}
     dt = {}
@@ -139,11 +144,14 @@ int main(int argc, char **argv) {
   state.densityPrev = new float[state.gridSize]{};
 
   StepStats stepStats;
-  uint32_t avgCounter = 0;
+  uint32_t avgCounter = 1;
   auto aggBegin = chrono::steady_clock::now();
   for (uint32_t i = 0; i < params.steps; i++) {
 
-    stepStats = step(params, state);
+    const auto stats = step(params, state);
+    stepStats.reactNsPerCell += stats.reactNsPerCell;
+    stepStats.velocityNsPerCell += stats.velocityNsPerCell;
+    stepStats.densityNsPerCell += stats.densityNsPerCell;
 
     const auto aggEnd = chrono::steady_clock::now();
     const auto aggTime = duration_cast<chrono::seconds>(aggEnd - aggBegin);
@@ -151,20 +159,24 @@ int main(int argc, char **argv) {
       println(R"(Total Avg: {}
 React Avg: {}
 Velocity Avg: {}
-Density Avg: {})",
+Density Avg: {}
+avgCounter: {})",
               (stepStats.reactNsPerCell + stepStats.velocityNsPerCell +
                stepStats.densityNsPerCell) /
-                  avgCounter,
-              stepStats.reactNsPerCell / avgCounter,
-              stepStats.velocityNsPerCell / avgCounter,
-              stepStats.densityNsPerCell / avgCounter);
+                  (avgCounter * params.N * params.N),
+              stepStats.reactNsPerCell / (avgCounter * params.N * params.N),
+              stepStats.velocityNsPerCell / (avgCounter * params.N * params.N),
+              stepStats.densityNsPerCell / (avgCounter * params.N * params.N),
+              avgCounter);
 
       aggBegin = chrono::steady_clock::now();
       stepStats.reactNsPerCell = chrono::nanoseconds::zero();
       stepStats.velocityNsPerCell = chrono::nanoseconds::zero();
       stepStats.densityNsPerCell = chrono::nanoseconds::zero();
-    } else
+      avgCounter = 1;
+    } else {
       avgCounter++;
+    }
   }
 
   delete[] state.vx;
