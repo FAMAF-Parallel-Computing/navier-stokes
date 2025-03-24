@@ -1,312 +1,267 @@
+#include <algorithm>
 #include <cstdint>
-#include <exception>
 
-#include <vulkan/vulkan.hpp>
-
+#define SDL_MAIN_USE_CALLBACKS 1
 #include <SDL3/SDL.h>
 #include <SDL3/SDL_main.h>
-#include <SDL3/SDL_vulkan.h>
+
+#include "solver/solver.hpp"
+#include "util.hpp"
 
 using namespace std;
 
-const std::vector<const char *> REQUIRED_VK_INSTANCE_LAYERS{
-    "VK_LAYER_KHRONOS_validation",
+static SDL_Window *window = nullptr;
+static SDL_Renderer *renderer = nullptr;
+
+struct NavierStokesParams {
+  uint32_t N;
+  uint32_t steps;
+  float dt;
+  float diff;
+  float visc;
+  float force;
+  float source;
 };
 
-const std::vector<const char *> REQUIRED_VK_DEVICE_EXTENSIONS{
-    VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
-    VK_KHR_MAINTENANCE_1_EXTENSION_NAME,
-    VK_KHR_MAINTENANCE_2_EXTENSION_NAME,
-    VK_KHR_MAINTENANCE_3_EXTENSION_NAME,
-    VK_KHR_MAINTENANCE_4_EXTENSION_NAME,
-    VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME,
-    VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
-    VK_KHR_DEDICATED_ALLOCATION_EXTENSION_NAME,
-    VK_KHR_BIND_MEMORY_2_EXTENSION_NAME,
-    VK_KHR_BUFFER_DEVICE_ADDRESS_EXTENSION_NAME,
-    VK_EXT_MEMORY_BUDGET_EXTENSION_NAME,
-    VK_EXT_MEMORY_PRIORITY_EXTENSION_NAME,
-    VK_KHR_TIMELINE_SEMAPHORE_EXTENSION_NAME,
-    VK_KHR_COPY_COMMANDS_2_EXTENSION_NAME,
+struct NavierStokesState {
+  uint64_t gridSize;
+  float *vx;
+  float *vy;
+  float *vxPrev;
+  float *vyPrev;
+  float *density;
+  float *densityPrev;
 };
 
-const std::vector<const char *> REQUIRED_VK_DEVICE_WINDOWING_EXTENSIONS{
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+struct AppState {
+  NavierStokesParams p;
+  NavierStokesState st;
+  uint32_t width;
+  uint32_t height;
+  bool displayDensity;
 };
 
-static vk::PhysicalDeviceFeatures2 getFeatures2() { return {}; }
-
-static vk::PhysicalDeviceVulkan11Features getFeaturesVK11() { return {}; }
-
-static vk::PhysicalDeviceVulkan12Features getFeaturesVK12() {
-  vk::PhysicalDeviceVulkan12Features f12{};
-  f12.setTimelineSemaphore(vk::True);
-  f12.setBufferDeviceAddress(vk::True);
-  return f12;
+static void clearData(AppState *app) {
+  uint64_t size = (app->p.N + 2) * (app->p.N + 2);
+  fill(app->st.vx, app->st.vx + size, 0);
+  fill(app->st.vy, app->st.vy + size, 0);
+  fill(app->st.vxPrev, app->st.vxPrev + size, 0);
+  fill(app->st.vyPrev, app->st.vyPrev + size, 0);
+  fill(app->st.density, app->st.density + size, 0);
+  fill(app->st.densityPrev, app->st.densityPrev + size, 0);
 }
 
-static vk::PhysicalDeviceVulkan13Features getFeaturesVK13() {
-  vk::PhysicalDeviceVulkan13Features f13{};
-  f13.setDynamicRendering(vk::True);
-  f13.setSynchronization2(vk::True);
-  f13.setMaintenance4(vk::True);
-  return f13;
+static void react(const uint64_t N, const float force, const float source,
+                  float *__restrict d, float *__restrict vx,
+                  float *__restrict vy) {
+  uint64_t size = (N + 2) * (N + 2);
+  float maxVelocity2 = 0.0f;
+  float maxDensity = 0.0f;
+
+  for (uint64_t i = 0; i < size; i++) {
+    if (maxVelocity2 < vx[i] * vx[i] + vy[i] * vy[i]) {
+      maxVelocity2 = vx[i] * vx[i] + vy[i] * vy[i];
+    }
+    if (maxDensity < d[i]) {
+      maxDensity = d[i];
+    }
+  }
+
+  fill(vx, vx + size, 0);
+  fill(vy, vy + size, 0);
+  fill(d, d + size, 0);
+
+  const uint64_t centerIdx = N / 2 + (N + 2) * (N / 2);
+  if (maxVelocity2 < 0.0000005f) {
+    vx[centerIdx] = force * 10;
+    vx[centerIdx] = force * 10;
+  }
+  if (maxDensity < 1.0f) {
+    d[centerIdx] = source * 10;
+  }
 }
 
-static const vk::StructureChain<
-    vk::PhysicalDeviceFeatures2, vk::PhysicalDeviceVulkan11Features,
-    vk::PhysicalDeviceVulkan12Features, vk::PhysicalDeviceVulkan13Features,
-    vk::PhysicalDeviceMemoryPriorityFeaturesEXT>
-    REQUIRED_VK_DEVICE_FEATURES = {
-        getFeatures2(),
-        getFeaturesVK11(),
-        getFeaturesVK12(),
-        getFeaturesVK13(),
-        vk::PhysicalDeviceMemoryPriorityFeaturesEXT{vk::True},
-};
+static void drawDensity(AppState *app) {
+  uint64_t N = app->p.N;
+  float cellW = static_cast<float>(app->width) / N;
+  float cellH = static_cast<float>(app->height) / N;
 
-struct Swapchain {
-  vk::SwapchainKHR h;
-  std::vector<vk::Image> images;
-  std::vector<vk::ImageView> views;
-  vk::Format format{};
-  vk::Extent2D extent;
-};
+  for (uint64_t i = 1; i <= N; i++) {
+    for (uint64_t j = 1; j <= N; j++) {
+      uint64_t idx = IX(i, j, N);
+      float d = clamp(app->st.density[idx], 0.0f, 1.0f);
 
-class NavierStokesRender {
-public:
-  ~NavierStokesRender() {
-    SDL_DestroyWindow(W);
-    SDL_Quit();
-  }
+      uint8_t color = static_cast<uint8_t>(d * 255);
+      SDL_SetRenderDrawColor(renderer, color, color, color, 255);
 
-  [[nodiscard]] bool setup() {
-    SDL_SetAppMetadata("navier-stokes", "1.0", "dev.navier-stokes");
-
-    if (!SDL_Init(SDL_INIT_VIDEO)) {
-      SDL_Log("[SDL] Couldn't initialize SDL: %s", SDL_GetError());
-      return false;
-    }
-
-    W = SDL_CreateWindow("navier-stokes", 640, 480, SDL_WINDOW_VULKAN);
-    if (W == nullptr) {
-      SDL_Log("[SDL] Couldn't create window: %s", SDL_GetError());
-      return -1;
-    }
-
-    vk::ApplicationInfo appInfo{
-        "naiver-stokes", VK_MAKE_API_VERSION(0, 1, 0, 0),
-        "naiver-stokes-renderer", VK_MAKE_API_VERSION(0, 1, 0, 0),
-        VK_API_VERSION_1_4};
-
-    std::vector<const char *> instanceLayers;
-    for (const auto &l : REQUIRED_VK_INSTANCE_LAYERS) {
-      instanceLayers.push_back(l);
-    }
-
-    unsigned intanceExtensionCount;
-    auto instanceExtensionsTmp =
-        SDL_Vulkan_GetInstanceExtensions(&intanceExtensionCount);
-    std::vector<const char *> instanceExtensions;
-    for (uint32_t i; i < intanceExtensionCount; i++) {
-      instanceExtensions.push_back(instanceExtensionsTmp[i]);
-    }
-
-    I = vk::createInstance({{}, &appInfo, instanceLayers, instanceExtensions});
-    const auto pD = I.enumeratePhysicalDevices()[0];
-
-    VkSurfaceKHR STmp;
-    SDL_Vulkan_CreateSurface(W, I, nullptr, &STmp);
-    S = vk::SurfaceKHR{STmp};
-
-    std::vector<const char *> deviceExtensions;
-    for (const auto &x : REQUIRED_VK_DEVICE_WINDOWING_EXTENSIONS) {
-      deviceExtensions.push_back(x);
-    }
-
-    for (const auto &x : REQUIRED_VK_DEVICE_EXTENSIONS) {
-      deviceExtensions.push_back(x);
-    }
-
-    const auto availableQueueFamilies = pD.getQueueFamilyProperties();
-    std::array<float, 1> queuePriorities{1.};
-    vk::DeviceQueueCreateInfo queueInfo{{}, 0, queuePriorities};
-    vk::DeviceCreateInfo deviceInfo{
-        {}, queueInfo,
-        {}, deviceExtensions,
-        {}, &REQUIRED_VK_DEVICE_FEATURES.get<vk::PhysicalDeviceFeatures2>()};
-    D = pD.createDevice(deviceInfo);
-
-    Q = D.getQueue(0, 0);
-
-    if (!SDL_GetWindowSizeInPixels(W, &width, &height)) {
-      SDL_Log("[SDL] Couldn't get window size in pixels: %s", SDL_GetError());
-      return false;
-    }
-
-    uint32_t minInageCount = 3;
-    vk::Extent2D swapchainExtent{static_cast<uint32_t>(width),
-                                 static_cast<uint32_t>(height)};
-    vk::Format swapchainFormat{vk::Format::eB8G8R8A8Unorm};
-    vk::SwapchainCreateInfoKHR swapchainInfo{
-        {},
-        S,
-        minInageCount,
-        swapchainFormat,
-        vk::ColorSpaceKHR::eSrgbNonlinear,
-        swapchainExtent,
-        1,
-        vk::ImageUsageFlagBits::eColorAttachment |
-            vk::ImageUsageFlagBits::eTransferDst,
-        vk::SharingMode::eExclusive,
-        {},
-        vk::SurfaceTransformFlagBitsKHR::eIdentity,
-        vk::CompositeAlphaFlagBitsKHR::eOpaque,
-        vk::PresentModeKHR::eFifo,
-        vk::True,
-        {}};
-
-    auto swapchain = D.createSwapchainKHR(swapchainInfo);
-
-    auto swapchainImages = D.getSwapchainImagesKHR(swapchain);
-    std::vector<vk::ImageView> swapchainImageViews;
-    swapchainImageViews.reserve(swapchainImages.size());
-    for (const auto &image : swapchainImages) {
-      swapchainImageViews.push_back(
-          D.createImageView({{},
-                             image,
-                             vk::ImageViewType::e2D,
-                             swapchainFormat,
-                             {},
-                             {vk::ImageAspectFlagBits::eColor, 0, 1, 0, 1}}));
-    }
-    SC = Swapchain{swapchain, swapchainImages, swapchainImageViews,
-                   swapchainFormat, swapchainExtent};
-
-    CP = D.createCommandPool(
-        {vk::CommandPoolCreateFlagBits::eResetCommandBuffer, 0});
-    CMD = std::move(
-        D.allocateCommandBuffers({CP, vk::CommandBufferLevel::ePrimary, 1})
-            .front());
-
-    DrawFence = D.createFence({vk::FenceCreateFlagBits::eSignaled});
-    ImageAvailable = D.createSemaphore({});
-    RenderFinished = D.createSemaphore({});
-
-    return true;
-  }
-
-  void run() {
-    bool isRunning = true;
-    while (isRunning) {
-      SDL_Event event;
-      while (SDL_PollEvent(&event) != 0) {
-        if (event.type == SDL_EVENT_QUIT) {
-          isRunning = false;
-        }
-      }
-
-      const auto wfR = D.waitForFences(DrawFence, vk::True, UINT64_MAX);
-      if (wfR != vk::Result::eSuccess) {
-        throw std::runtime_error("Failed to wait for fence");
-      }
-      D.resetFences(DrawFence);
-
-      const auto aiR = D.acquireNextImageKHR(SC.h, UINT64_MAX, ImageAvailable);
-      if (aiR.result != vk::Result::eSuccess) {
-        throw std::runtime_error("Failed to acquire next image");
-      }
-      const auto imageIndex = aiR.value;
-
-      vk::CommandBufferBeginInfo beginInfo{
-          vk::CommandBufferUsageFlagBits::eOneTimeSubmit};
-      CMD.begin(beginInfo);
-
-      vk::ImageMemoryBarrier2 toWriteBarrier{
-          vk::PipelineStageFlagBits2::eNone,
-          vk::AccessFlagBits2::eNone,
-          vk::PipelineStageFlagBits2::eClear,
-          vk::AccessFlagBits2::eTransferWrite,
-          vk::ImageLayout::eUndefined,
-          vk::ImageLayout::eGeneral,
-          0,
-          0,
-          SC.images[imageIndex],
-          vk::ImageSubresourceRange{vk::ImageAspectFlagBits::eColor, 0,
-                                    vk::RemainingMipLevels, 0,
-                                    vk::RemainingArrayLayers}};
-      vk::DependencyInfo toWriteInfo{{}, {}, {}, toWriteBarrier};
-      CMD.pipelineBarrier2(toWriteInfo);
-
-      CMD.clearColorImage(
-          SC.images[imageIndex], vk::ImageLayout::eGeneral,
-          vk::ClearColorValue{std::array<float, 4>{1.0F, 0.0F, 0.0F, 1.0F}},
-          vk::ImageSubresourceRange{vk::ImageAspectFlagBits::eColor, 0,
-                                    vk::RemainingMipLevels, 0,
-                                    vk::RemainingArrayLayers});
-
-      vk::ImageMemoryBarrier2 toPresentBarrier{
-          vk::PipelineStageFlagBits2::eClear,
-          vk::AccessFlagBits2::eTransferWrite,
-          vk::PipelineStageFlagBits2::eNone,
-          vk::AccessFlagBits2::eNone,
-          vk::ImageLayout::eGeneral,
-          vk::ImageLayout::ePresentSrcKHR,
-          0,
-          0,
-          SC.images[imageIndex],
-          vk::ImageSubresourceRange{vk::ImageAspectFlagBits::eColor, 0,
-                                    vk::RemainingMipLevels, 0,
-                                    vk::RemainingArrayLayers}};
-      vk::DependencyInfo toPresentInfo{{}, {}, {}, toPresentBarrier};
-      CMD.pipelineBarrier2(toPresentInfo);
-
-      CMD.end();
-
-      vk::CommandBufferSubmitInfo cmdSubmitInfo{CMD};
-      vk::SemaphoreSubmitInfo swapchainWait{
-          ImageAvailable, {}, vk::PipelineStageFlagBits2::eAllCommands};
-      vk::SemaphoreSubmitInfo renderSignal{
-          RenderFinished, {}, vk::PipelineStageFlagBits2::eAllCommands};
-      vk::SubmitInfo2 submitInfo{
-          {}, swapchainWait, cmdSubmitInfo, renderSignal};
-
-      Q.submit2(submitInfo, DrawFence);
-      const auto pR = Q.presentKHR({RenderFinished, SC.h, imageIndex});
-      if (pR != vk::Result::eSuccess) {
-        throw std::runtime_error("Failed to present image");
-      }
+      SDL_FRect rect;
+      rect.x = (i - 1) * cellW;
+      rect.y = (j - 1) * cellH;
+      rect.w = cellW;
+      rect.h = cellH;
+      SDL_RenderFillRect(renderer, &rect);
     }
   }
+}
 
-private:
-  int width, height;
-  SDL_Window *W;
-  vk::Instance I;
-  vk::Device D;
-  vk::SurfaceKHR S;
-  Swapchain SC;
-  vk::Queue Q;
-  vk::CommandPool CP;
-  vk::CommandBuffer CMD;
-  vk::Fence DrawFence;
-  vk::Semaphore ImageAvailable;
-  vk::Semaphore RenderFinished;
-};
+void drawVelocity(AppState *app) {
+  uint64_t N = app->p.N;
+  float cellW = static_cast<float>(app->width) / N;
+  float cellH = static_cast<float>(app->height) / N;
+  SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+  for (uint64_t i = 1; i <= N; i++) {
+    for (uint64_t j = 1; j <= N; j++) {
+      float x = (j - .5) * cellW;
+      float y = (i - .5) * cellH;
 
-int main(int argc, char **argv) {
-  NavierStokesRender app;
+      uint64_t idx = IX(i, j, N);
+      float x2 = x + app->st.vx[idx];
+      float y2 = y - app->st.vy[idx];
 
-  if (!app.setup()) {
-    SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION,
-                    "Failed Application setup...");
+      SDL_RenderLine(renderer, x, y, x2, y2);
+    }
+  }
+}
+
+static void simulationStep(AppState *app) {
+  react(app->p.N, app->p.force, app->p.source, app->st.densityPrev,
+        app->st.vxPrev, app->st.vyPrev);
+
+  // velocityStep(app->p.N, app->st.vx, app->st.vy, app->st.vxPrev,
+  // app->st.vyPrev,
+  //              app->p.visc, app->p.dt);
+
+  // densityStep(app->p.N, app->st.density, app->st.densityPrev, app->st.vx,
+  //             app->st.vy, app->p.diff, app->p.dt);
+}
+
+SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
+  if (argc != 1 && argc != 8) {
+    SDL_Log(R"(usage: %s N dt diff visc force source
+      Where
+      N: Grid resolution
+      dt: Time step
+      diff: Diffusion coefficient
+      visc: Viscocity coefficient
+      force: Scales the mouse movement that generate a force
+      source: Amount of density that will be deposited
+      steps: Amount of steps to perform)",
+            argv[0]);
+
+    return SDL_APP_FAILURE;
   }
 
-  try {
-    app.run();
-  } catch (const exception &e) {
-    SDL_LogCritical(SDL_LOG_CATEGORY_APPLICATION, "%s", e.what());
+  auto *app = new AppState;
+  if (argc == 1) {
+    app->p.N = 4;
+    app->p.dt = .1;
+    app->p.diff = 0;
+    app->p.visc = 0;
+    app->p.force = 5;
+    app->p.source = 100;
+    app->p.steps = 64; // Think a better default ;D
+    SDL_Log(R"(Using defaults:
+  N = %d
+  dt = %f
+  diff = %f
+  visc = %f
+  force = %f
+  source = %f)",
+            app->p.N, app->p.dt, app->p.diff, app->p.visc, app->p.force,
+            app->p.source);
+  } else {
+    app->p.N = atoi(argv[1]);
+    app->p.dt = atof(argv[2]);
+    app->p.diff = atof(argv[3]);
+    app->p.visc = atof(argv[4]);
+    app->p.force = atof(argv[5]);
+    app->p.source = atof(argv[6]);
+    app->p.steps = atof(argv[7]);
   }
 
-  return 0;
+  app->st.gridSize =
+      (app->p.N + 2) * (app->p.N + 2); // Allocate extra space for boundaries
+  app->st.vx = new float[app->st.gridSize]{};
+  app->st.vy = new float[app->st.gridSize]{};
+  app->st.vxPrev = new float[app->st.gridSize]{};
+  app->st.vyPrev = new float[app->st.gridSize]{};
+  app->st.density = new float[app->st.gridSize]{};
+  app->st.densityPrev = new float[app->st.gridSize]{};
+
+  app->width = 640;
+  app->height = 480;
+  app->displayDensity = true;
+
+  *appstate = app;
+
+  SDL_SetAppMetadata("navier-stokes", "1.0", "dev.navier-stokes");
+
+  if (!SDL_Init(SDL_INIT_VIDEO)) {
+    SDL_Log("Couldn't initialize SDL: %s", SDL_GetError());
+    return SDL_APP_FAILURE;
+  }
+
+  if (!SDL_CreateWindowAndRenderer("navier-stokes", 640, 480,
+                                   SDL_WINDOW_RESIZABLE, &window, &renderer)) {
+    SDL_Log("Couldn't create window/renderer: %s", SDL_GetError());
+    return SDL_APP_FAILURE;
+  }
+
+  return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppEvent(void *appstate, SDL_Event *event) {
+  auto *app = reinterpret_cast<AppState *>(appstate);
+  switch (event->type) {
+  case SDL_EVENT_QUIT:
+    return SDL_APP_SUCCESS;
+  case SDL_EVENT_KEY_DOWN:
+    if (event->key.key == SDLK_Q) {
+      return SDL_APP_SUCCESS;
+    } else if (event->key.key == SDLK_C) {
+      clearData(app);
+    } else if (event->key.key == SDLK_V) {
+      app->displayDensity = !app->displayDensity;
+    }
+    break;
+  case SDL_EVENT_WINDOW_RESIZED:
+    app->width = event->window.data1;
+    app->height = event->window.data2;
+    break;
+  default:
+    break;
+  }
+  return SDL_APP_CONTINUE;
+}
+
+SDL_AppResult SDL_AppIterate(void *appstate) {
+  auto *app = reinterpret_cast<AppState *>(appstate);
+
+  simulationStep(app);
+
+  SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+  SDL_RenderClear(renderer);
+
+  if (app->displayDensity) {
+    drawDensity(app);
+  } else {
+    drawVelocity(app);
+  }
+
+  SDL_RenderPresent(renderer);
+
+  return SDL_APP_CONTINUE;
+}
+
+void SDL_AppQuit(void *appstate, SDL_AppResult result) {
+  if (result == SDL_APP_SUCCESS) {
+    auto *app = reinterpret_cast<AppState *>(appstate);
+    delete[] app->st.vx;
+    delete[] app->st.vy;
+    delete[] app->st.vxPrev;
+    delete[] app->st.vyPrev;
+    delete[] app->st.density;
+    delete[] app->st.densityPrev;
+    delete app;
+  }
 }

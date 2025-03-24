@@ -4,15 +4,11 @@
 #include <cstdint>
 #include <utility>
 
+#include "../util.hpp"
+
 using namespace std;
 
 enum class Boundary { NONE = 0, VERTICAL = 1, HORIZONTAL = 2 };
-
-// reorder this... to row major
-// and also fix the usages below
-static inline uint64_t idx(uint64_t i, uint64_t j, uint64_t n) {
-  return i + (n + 2) * j;
-}
 
 static void add_source(const uint64_t n, float *__restrict x,
                        float *__restrict s, const float dt) {
@@ -25,35 +21,35 @@ static void add_source(const uint64_t n, float *__restrict x,
 static void setBoundary(const uint64_t n, const Boundary b,
                         float *__restrict x) {
   // left-upper corner
-  x[idx(0, 0, n)] = .5 * (x[idx(1, 0, n)] + x[idx(0, 1, n)]);
+  x[IX(0, 0, n)] = .5 * (x[IX(1, 0, n)] + x[IX(0, 1, n)]);
 
   // first row
   for (uint64_t j = 1; j <= n; j++)
-    x[idx(0, j, n)] =
-        (b == Boundary::VERTICAL) ? -x[idx(1, j, n)] : x[idx(1, j, n)];
+    x[IX(0, j, n)] =
+        (b == Boundary::VERTICAL) ? -x[IX(1, j, n)] : x[IX(1, j, n)];
 
   // right-upper corner
-  x[idx(0, n + 1, n)] = .5 * (x[idx(1, n + 1, n)] + x[idx(0, n, n)]);
+  x[IX(0, n + 1, n)] = .5 * (x[IX(1, n + 1, n)] + x[IX(0, n, n)]);
 
   // cols
   // not coallesced access :(
   for (uint64_t i = 1; i <= n; i++) {
-    x[idx(i, 0, n)] =
-        b == Boundary::HORIZONTAL ? -x[idx(i, 1, n)] : x[idx(i, 1, n)];
-    x[idx(i, n + 1, n)] =
-        b == Boundary::HORIZONTAL ? -x[idx(i, n, n)] : x[idx(i, n, n)];
+    x[IX(i, 0, n)] =
+        b == Boundary::HORIZONTAL ? -x[IX(i, 1, n)] : x[IX(i, 1, n)];
+    x[IX(i, n + 1, n)] =
+        b == Boundary::HORIZONTAL ? -x[IX(i, n, n)] : x[IX(i, n, n)];
   }
 
   // left-lower corner
-  x[idx(n + 1, 0, n)] = .5 * (x[idx(n, 0, n)] + x[idx(n + 1, 1, n)]);
+  x[IX(n + 1, 0, n)] = .5 * (x[IX(n, 0, n)] + x[IX(n + 1, 1, n)]);
 
   // last row
   for (uint64_t j = 1; j <= n; j++)
-    x[idx(n + 1, j, n)] =
-        (b == Boundary::VERTICAL) ? -x[idx(n, j, n)] : x[idx(n, j, n)];
+    x[IX(n + 1, j, n)] =
+        (b == Boundary::VERTICAL) ? -x[IX(n, j, n)] : x[IX(n, j, n)];
 
   // right-lower corner
-  x[idx(n + 1, n + 1, n)] = .5 * (x[idx(n, n + 1, n)] + x[idx(n + 1, n, n)]);
+  x[IX(n + 1, n + 1, n)] = .5 * (x[IX(n, n + 1, n)] + x[IX(n + 1, n, n)]);
 }
 
 static void linearSolve(const uint64_t n, const Boundary b, float *__restrict x,
@@ -61,10 +57,10 @@ static void linearSolve(const uint64_t n, const Boundary b, float *__restrict x,
   for (uint32_t k = 0; k < 20; k++) {
     for (uint64_t i = 1; i <= n; i++)
       for (uint64_t j = 1; j <= n; j++)
-        x[idx(i, j, n)] = (xPrev[idx(i, j, n)] +
-                           a * (x[idx(i - 1, j, n)] + x[idx(i + 1, j, n)]) +
-                           x[idx(i, j - 1, n)] + x[idx(i, j + 1, n)]) /
-                          (1 + 4 * a);
+        x[IX(i, j, n)] = (xPrev[IX(i, j, n)] +
+                          a * (x[IX(i - 1, j, n)] + x[IX(i + 1, j, n)]) +
+                          x[IX(i, j - 1, n)] + x[IX(i, j + 1, n)]) /
+                         (1 + 4 * a);
 
     setBoundary(n, b, x);
   }
@@ -84,8 +80,8 @@ static void advect(const uint64_t n, const Boundary b, float *__restrict d,
   float dt0 = dt * n;
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
-      float x = i - dt0 * vx[idx(i, j, n)];
-      float y = j - dt0 * vx[idx(i, j, n)];
+      float x = j - dt0 * vx[IX(i, j, n)];
+      float y = i - dt0 * vy[IX(i, j, n)];
 
       x = clamp(x, 0.5f, n + .5f);
       y = clamp(y, 0.5f, n + .5f);
@@ -100,9 +96,9 @@ static void advect(const uint64_t n, const Boundary b, float *__restrict d,
       const float t1 = y - j0;
       const float t0 = 1.f - t1;
 
-      d[idx(i, j, n)] =
-          s0 * (t0 * dPrev[idx(i0, j0, n)] + t1 * dPrev[idx(i0, j1, n)]) +
-          s1 * (t0 * dPrev[idx(i1, j0, n)] + t1 * dPrev[idx(i1, j1, n)]);
+      d[IX(i, j, n)] =
+          s0 * (t0 * dPrev[IX(i0, j0, n)] + t1 * dPrev[IX(i0, j1, n)]) +
+          s1 * (t0 * dPrev[IX(i1, j0, n)] + t1 * dPrev[IX(i1, j1, n)]);
     }
   }
 
@@ -113,11 +109,11 @@ static void project(const uint64_t n, float *__restrict vx,
                     float *__restrict vy, float *pressure, float *divergence) {
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
-      divergence[idx(i, j, n)] = -.5 *
-                                 (vx[idx(i + 1, j, n)] - vx[idx(i - 1, j, n)] +
-                                  vy[idx(i, j + 1, n)] - vy[idx(i, j - 1, n)]) /
-                                 n;
-      pressure[idx(i, j, n)] = 0;
+      divergence[IX(i, j, n)] = -.5 *
+                                (vx[IX(i + 1, j, n)] - vx[IX(i - 1, j, n)] +
+                                 vy[IX(i, j + 1, n)] - vy[IX(i, j - 1, n)]) /
+                                n;
+      pressure[IX(i, j, n)] = 0;
     }
   }
 
@@ -128,10 +124,10 @@ static void project(const uint64_t n, float *__restrict vx,
 
   for (uint64_t i = 1; i <= n; i++) {
     for (uint64_t j = 1; j <= n; j++) {
-      vx[idx(i, j, n)] -=
-          .5 * n * (pressure[idx(i + 1, j, n)] - pressure[idx(i - 1, j, n)]);
-      vy[idx(i, j, n)] -=
-          .5 * n * (pressure[idx(i, j + 1, n)] - pressure[idx(i, j - 1, n)]);
+      vx[IX(i, j, n)] -=
+          .5 * n * (pressure[IX(i + 1, j, n)] - pressure[IX(i - 1, j, n)]);
+      vy[IX(i, j, n)] -=
+          .5 * n * (pressure[IX(i, j + 1, n)] - pressure[IX(i, j - 1, n)]);
     }
   }
 

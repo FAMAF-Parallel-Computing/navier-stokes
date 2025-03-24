@@ -1,0 +1,14 @@
+[
+{
+  "directory": "/home/orphee/Dev/FAMAF/navier-stokes/build",
+  "command": "/usr/bin/clang++ -g -std=c++23 -fcolor-diagnostics @CMakeFiles/generic_solver.dir/solver/generic.cpp.o.modmap -o CMakeFiles/generic_solver.dir/solver/generic.cpp.o -c /home/orphee/Dev/FAMAF/navier-stokes/solver/generic.cpp",
+  "file": "/home/orphee/Dev/FAMAF/navier-stokes/solver/generic.cpp",
+  "output": "CMakeFiles/generic_solver.dir/solver/generic.cpp.o"
+},
+{
+  "directory": "/home/orphee/Dev/FAMAF/navier-stokes/build",
+  "command": "/usr/bin/clang++ -I/home/orphee/apps/SDL_3_2_8/include -g -std=c++23 -fcolor-diagnostics @CMakeFiles/navier-stokes-render.dir/render.cpp.o.modmap -o CMakeFiles/navier-stokes-render.dir/render.cpp.o -c /home/orphee/Dev/FAMAF/navier-stokes/render.cpp",
+  "file": "/home/orphee/Dev/FAMAF/navier-stokes/render.cpp",
+  "output": "CMakeFiles/navier-stokes-render.dir/render.cpp.o"
+}
+]

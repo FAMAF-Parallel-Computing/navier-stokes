@@ -24,7 +24,7 @@ struct NavierStokesState {
   float *vxPrev;
   float *vyPrev;
   float *density;
-  float *density_prev;
+  float *densityPrev;
 };
 
 struct StepStats {
@@ -78,7 +78,7 @@ static StepStats step(const NavierStokesParams &p,
       velocityEnd - velocityBegin;
 
   const auto densityBegin = chrono::steady_clock::now();
-  densityStep(p.N, st.density, st.density_prev, st.vx, st.vy, p.diff, p.dt);
+  densityStep(p.N, st.density, st.densityPrev, st.vx, st.vy, p.diff, p.dt);
   const auto densityEnd = chrono::steady_clock::now();
   const chrono::duration<double, nano> densityTime = densityEnd - densityBegin;
 
@@ -86,7 +86,7 @@ static StepStats step(const NavierStokesParams &p,
 }
 
 int main(int argc, char **argv) {
-  if (argc != 1 && argc != 8)
+  if (argc != 1 && argc != 8) {
     println(R"(usage: {} N dt diff visc force source
             Where
                 N: Grid resolution
@@ -97,6 +97,8 @@ int main(int argc, char **argv) {
                 source: Amount of density that will be deposited
                 steps: Amount of steps to perform)",
             argv[0]);
+    return -1;
+  }
 
   NavierStokesParams params{};
   if (argc == 1) {
@@ -134,7 +136,7 @@ int main(int argc, char **argv) {
   state.vxPrev = new float[state.gridSize]{};
   state.vyPrev = new float[state.gridSize]{};
   state.density = new float[state.gridSize]{};
-  state.density_prev = new float[state.gridSize]{};
+  state.densityPrev = new float[state.gridSize]{};
 
   StepStats stepStats;
   uint32_t avgCounter = 0;
@@ -170,7 +172,7 @@ Density Avg: {})",
   delete[] state.vxPrev;
   delete[] state.vyPrev;
   delete[] state.density;
-  delete[] state.density_prev;
+  delete[] state.densityPrev;
 
   return 0;
 }
