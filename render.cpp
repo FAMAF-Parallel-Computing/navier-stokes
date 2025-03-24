@@ -74,7 +74,7 @@ static void react(const uint64_t N, const float force, const float source,
   const uint64_t centerIdx = N / 2 + (N + 2) * (N / 2);
   if (maxVelocity2 < 0.0000005f) {
     vx[centerIdx] = force * 10;
-    vx[centerIdx] = force * 10;
+    vy[centerIdx] = force * 10;
   }
   if (maxDensity < 1.0f) {
     d[centerIdx] = source * 10;
@@ -95,8 +95,8 @@ static void drawDensity(AppState *app) {
       SDL_SetRenderDrawColor(renderer, color, color, color, 255);
 
       SDL_FRect rect;
-      rect.x = (i - 1) * cellW;
-      rect.y = (j - 1) * cellH;
+      rect.x = (j - 1) * cellW;
+      rect.y = app->height - (i - 1) * cellH;
       rect.w = cellW;
       rect.h = cellH;
       SDL_RenderFillRect(renderer, &rect);
@@ -112,13 +112,15 @@ void drawVelocity(AppState *app) {
   for (uint64_t i = 1; i <= N; i++) {
     for (uint64_t j = 1; j <= N; j++) {
       float x = (j - .5) * cellW;
-      float y = (i - .5) * cellH;
+      float y = app->height - (i - .5) * cellH;
 
       uint64_t idx = IX(i, j, N);
-      float x2 = x + app->st.vx[idx];
-      float y2 = y - app->st.vy[idx];
+      if (app->st.vx[idx] + app->st.vy[idx] > .01) {
+        float x2 = x + app->st.vx[idx];
+        float y2 = y - app->st.vy[idx];
 
-      SDL_RenderLine(renderer, x, y, x2, y2);
+        SDL_RenderLine(renderer, x, y, x2, y2);
+      }
     }
   }
 }
@@ -127,12 +129,11 @@ static void simulationStep(AppState *app) {
   react(app->p.N, app->p.force, app->p.source, app->st.densityPrev,
         app->st.vxPrev, app->st.vyPrev);
 
-  // velocityStep(app->p.N, app->st.vx, app->st.vy, app->st.vxPrev,
-  // app->st.vyPrev,
-  //              app->p.visc, app->p.dt);
+  velocityStep(app->p.N, app->st.vx, app->st.vy, app->st.vxPrev, app->st.vyPrev,
+               app->p.visc, app->p.dt);
 
-  // densityStep(app->p.N, app->st.density, app->st.densityPrev, app->st.vx,
-  //             app->st.vy, app->p.diff, app->p.dt);
+  densityStep(app->p.N, app->st.density, app->st.densityPrev, app->st.vx,
+              app->st.vy, app->p.diff, app->p.dt);
 }
 
 SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
@@ -153,7 +154,7 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char **argv) {
 
   auto *app = new AppState;
   if (argc == 1) {
-    app->p.N = 4;
+    app->p.N = 128;
     app->p.dt = .1;
     app->p.diff = 0;
     app->p.visc = 0;
