@@ -1,0 +1,120 @@
+Using defaults:
+    N = 512
+    dt = 0.1
+    diff = 0
+    visc = 0
+    force = 5
+    source = 100
+Total Avg: 35.441ns
+React Avg: 0.733906ns
+Velocity Avg: 28.0137ns
+Density Avg: 6.69341ns
+avgCounter: 216
+Total Avg: 34.3595ns
+React Avg: 0.750014ns
+Velocity Avg: 27.0248ns
+Density Avg: 6.58467ns
+avgCounter: 223
+Total Avg: 35.0345ns
+React Avg: 0.736101ns
+Velocity Avg: 27.5218ns
+Density Avg: 6.7766ns
+avgCounter: 218
+Total Avg: 38.1958ns
+React Avg: 0.747638ns
+Velocity Avg: 30.2968ns
+Density Avg: 7.15134ns
+avgCounter: 200
+Total Avg: 36.3582ns
+React Avg: 0.737089ns
+Velocity Avg: 28.734ns
+Density Avg: 6.88707ns
+avgCounter: 210
+Total Avg: 35.3306ns
+React Avg: 0.756941ns
+Velocity Avg: 27.9424ns
+Density Avg: 6.63127ns
+avgCounter: 216
+Total Avg: 36.3085ns
+React Avg: 0.751589ns
+Velocity Avg: 28.1962ns
+Density Avg: 7.36077ns
+avgCounter: 211
+Total Avg: 34.9648ns
+React Avg: 0.727319ns
+Velocity Avg: 27.648ns
+Density Avg: 6.58948ns
+avgCounter: 219
+Total Avg: 34.6355ns
+React Avg: 0.738431ns
+Velocity Avg: 27.223ns
+Density Avg: 6.67408ns
+avgCounter: 221
+Total Avg: 34.9226ns
+React Avg: 0.760728ns
+Velocity Avg: 27.3475ns
+Density Avg: 6.81437ns
+avgCounter: 219
+Total Avg: 38.8827ns
+React Avg: 0.714425ns
+Velocity Avg: 30.5967ns
+Density Avg: 7.57159ns
+avgCounter: 197
+Total Avg: 36.566ns
+React Avg: 0.7058ns
+Velocity Avg: 28.7491ns
+Density Avg: 7.11106ns
+avgCounter: 209
+Total Avg: 37.2532ns
+React Avg: 0.697756ns
+Velocity Avg: 29.4394ns
+Density Avg: 7.11601ns
+avgCounter: 205
+Total Avg: 36.3417ns
+React Avg: 0.698485ns
+Velocity Avg: 28.543ns
+Density Avg: 7.10023ns
+avgCounter: 210
+Total Avg: 35.1286ns
+React Avg: 0.702796ns
+Velocity Avg: 27.7245ns
+Density Avg: 6.70135ns
+avgCounter: 218
+Total Avg: 35.1796ns
+React Avg: 0.693024ns
+Velocity Avg: 27.6255ns
+Density Avg: 6.86105ns
+avgCounter: 217
+Total Avg: 37.19ns
+React Avg: 0.6926ns
+Velocity Avg: 29.5748ns
+Density Avg: 6.92262ns
+avgCounter: 206
+Total Avg: 39.3558ns
+React Avg: 0.707187ns
+Velocity Avg: 31.3209ns
+Density Avg: 7.32771ns
+avgCounter: 194
+Total Avg: 36.0182ns
+React Avg: 0.700352ns
+Velocity Avg: 28.475ns
+Density Avg: 6.84287ns
+avgCounter: 212
+
+ Performance counter stats for './build/navier-stokes-headless':
+
+      1,232,907.68 msec task-clock:u                     #   31.772 CPUs utilized             
+                 0      context-switches:u               #    0.000 /sec                      
+                 0      cpu-migrations:u                 #    0.000 /sec                      
+             2,016      page-faults:u                    #    1.635 /sec                      
+ 4,057,984,244,848      instructions:u                   #    0.63  insn per cycle            
+                                                  #    0.04  stalled cycles per insn   
+ 6,447,591,781,389      cycles:u                         #    5.230 GHz                       
+   175,779,816,970      stalled-cycles-frontend:u        #    2.73% frontend cycles idle      
+   969,254,520,858      branches:u                       #  786.153 M/sec                     
+       614,713,389      branch-misses:u                  #    0.06% of all branches           
+
+      38.804972038 seconds time elapsed
+
+    1208.498877000 seconds user
+      22.389066000 seconds sys

@@ -1,0 +1,56 @@
+Using defaults : N=512 dt=0.1 diff=0 visc=0 force = 5 source=100
+559.043129, 2.123775, 445.310787, 111.608566: ns per cell total, react, vel_step, dens_step
+578.298529, 2.342022, 463.440092, 112.516415: ns per cell total, react, vel_step, dens_step
+575.037443, 2.808586, 460.094434, 112.134423: ns per cell total, react, vel_step, dens_step
+562.891818, 2.553377, 448.654568, 111.683874: ns per cell total, react, vel_step, dens_step
+564.423735, 2.354438, 450.292612, 111.776685: ns per cell total, react, vel_step, dens_step
+558.335866, 2.441281, 444.210291, 111.684295: ns per cell total, react, vel_step, dens_step
+558.221123, 2.230986, 444.279281, 111.710856: ns per cell total, react, vel_step, dens_step
+558.417531, 2.206275, 444.473324, 111.737932: ns per cell total, react, vel_step, dens_step
+559.006246, 2.072296, 444.292756, 112.641193: ns per cell total, react, vel_step, dens_step
+558.387636, 2.068534, 444.405616, 111.913486: ns per cell total, react, vel_step, dens_step
+558.724825, 2.060629, 444.280996, 112.383201: ns per cell total, react, vel_step, dens_step
+558.388718, 2.054815, 443.733179, 112.600724: ns per cell total, react, vel_step, dens_step
+560.035962, 2.063163, 445.304547, 112.668252: ns per cell total, react, vel_step, dens_step
+560.191794, 2.069998, 444.698081, 113.423715: ns per cell total, react, vel_step, dens_step
+558.820224, 2.060770, 444.653437, 112.106016: ns per cell total, react, vel_step, dens_step
+558.395221, 2.055021, 444.269618, 112.070582: ns per cell total, react, vel_step, dens_step
+558.538845, 2.053126, 444.412397, 112.073322: ns per cell total, react, vel_step, dens_step
+558.041464, 2.049656, 443.738808, 112.253000: ns per cell total, react, vel_step, dens_step
+559.722551, 2.062971, 445.252750, 112.406830: ns per cell total, react, vel_step, dens_step
+558.369608, 2.059793, 444.140159, 112.169656: ns per cell total, react, vel_step, dens_step
+558.014278, 2.051391, 443.801989, 112.160898: ns per cell total, react, vel_step, dens_step
+559.255938, 2.052549, 444.813856, 112.389533: ns per cell total, react, vel_step, dens_step
+559.283113, 2.057740, 444.781153, 112.444219: ns per cell total, react, vel_step, dens_step
+559.721159, 2.067693, 445.099390, 112.554076: ns per cell total, react, vel_step, dens_step
+558.549265, 2.056081, 444.096351, 112.396833: ns per cell total, react, vel_step, dens_step
+560.014254, 2.058919, 445.392703, 112.562631: ns per cell total, react, vel_step, dens_step
+558.452361, 2.049168, 443.943272, 112.459921: ns per cell total, react, vel_step, dens_step
+558.653857, 2.051690, 443.889204, 112.712962: ns per cell total, react, vel_step, dens_step
+558.994440, 2.052072, 444.176668, 112.765699: ns per cell total, react, vel_step, dens_step
+558.937277, 2.053525, 443.717291, 113.166460: ns per cell total, react, vel_step, dens_step
+560.274299, 2.057107, 445.173551, 113.043642: ns per cell total, react, vel_step, dens_step
+559.220385, 2.056588, 444.465034, 112.698762: ns per cell total, react, vel_step, dens_step
+563.302675, 2.056467, 444.224410, 117.021797: ns per cell total, react, vel_step, dens_step
+558.759882, 2.057954, 443.794651, 112.907277: ns per cell total, react, vel_step, dens_step
+558.236094, 2.061452, 443.549561, 112.625082: ns per cell total, react, vel_step, dens_step
+558.529761, 2.058002, 443.644440, 112.827319: ns per cell total, react, vel_step, dens_step
+558.709559, 2.058860, 443.760713, 112.889986: ns per cell total, react, vel_step, dens_step
+
+ Performance counter stats for './headless':
+
+         37,585.06 msec task-clock:u                     #    1.000 CPUs utilized             
+                 0      context-switches:u               #    0.000 /sec                      
+                 0      cpu-migrations:u                 #    0.000 /sec                      
+             1,613      page-faults:u                    #   42.916 /sec                      
+   608,770,009,298      instructions:u                   #    2.83  insn per cycle            
+                                                  #    0.00  stalled cycles per insn   
+   214,931,971,310      cycles:u                         #    5.719 GHz                       
+       373,463,343      stalled-cycles-frontend:u        #    0.17% frontend cycles idle      
+    11,002,880,950      branches:u                       #  292.746 M/sec                     
+        16,746,433      branch-misses:u                  #    0.15% of all branches           
+
+      37.601717437 seconds time elapsed
+
+      37.520193000 seconds user
+       0.002967000 seconds sys
